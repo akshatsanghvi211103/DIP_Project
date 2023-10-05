@@ -183,6 +183,7 @@ function Video() {
         
         canvasContext.moveTo(x2, y2);
         canvasContext.lineTo(arrowHead2x, arrowHead2y);
+        canvasContext.lineWidth = 100;
         canvasContext.stroke()
 
     }
@@ -253,10 +254,10 @@ function Video() {
         video.onloadedmetadata = () => {
             const width = video.videoWidth
             const height = video.videoHeight
-            console.log("width, height: ")
-            console.log(width)
-            console.log(height)
-            console.log('\n')
+            // console.log("width, height: ")
+            // console.log(width)
+            // console.log(height)
+            // console.log('\n')
             setSize({width, height})
         }
     }, [])
