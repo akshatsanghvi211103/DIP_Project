@@ -1,0 +1,100 @@
+:root {
+    --backgroundColor: #222222;
+    --leftSize: 60%;
+    --headerSize: 50px;
+    --globalPadding: 10px;
+}
+
+head, body {
+    position: fixed;
+    background-color: var(--backgroundColor);
+    padding: var(--globalPadding);
+    color: #cccbcc;
+    font-family: monospace;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+}
+
+#root {
+    height: 100%;
+}
+
+#header {
+    width: 100%;
+    height: var(--headerSize);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#pageWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+
+    /* height: 100%; */
+    height: calc(100vh - var(--globalPadding) - var(--headerSize));
+}
+
+.sideWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    /* height: calc(100% - var(--globalPadding) - var(--headerSize)); */
+}
+
+#leftSideWrapper {
+    width: var(--leftSize);
+}
+
+#rightSideWrapper {
+    width: calc(100% - var(--leftSize));
+}
+
+#videoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: fit-content;
+    height: fit-content
+
+}
+
+.container {
+    border-radius: 5px;
+    height: fit-content;
+    width: fit-content;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.video {
+    position: absolute;
+}
+
+.hyp {
+    height: 30%;
+    width: 100%;
+}
+
+.image1 {
+
+    max-width: 50%;
+    height: auto;
+    object-fit: cover;
+    flex: 0;
+}
+
+.canvas1 {
+
+}
