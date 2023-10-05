@@ -1,14 +1,18 @@
 :root {
     --backgroundColor: #222222;
-    --leftSize: 60%;
+    --leftSize: 50%;
     --headerSize: 50px;
     --globalPadding: 10px;
+}
+
+html, head, body {
+    padding: 0px;
+    margin: 0px;
 }
 
 head, body {
     position: fixed;
     background-color: var(--backgroundColor);
-    padding: var(--globalPadding);
     color: #cccbcc;
     font-family: monospace;
 }
@@ -29,6 +33,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    border-bottom: 1px solid #cccbcc;
 }
 
 #pageWrapper {
@@ -95,6 +101,12 @@ body {
     flex: 0;
 }
 
-.canvas1 {
+.verticalDivider {
+    height: 100%;
+    width: 1px;
+    background-color: #cccbcc;
+}
 
+#tabs {
+    
 }

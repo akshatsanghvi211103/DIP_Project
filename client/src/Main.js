@@ -26,23 +26,19 @@ function Header() {
 
     return (
         <div id="header">
-            hihihi
+            Interactive 2D Video Dynamics
         </div>
     )
 }
 
-function UsingVideo() {
-    // Top Left = Video
-    // Bottom Left = Hyperparameters (react-slider), Apply Settings Button
-    // Right Side = FFT visualizations.
-    // All frequencies of that point in X, Y
-    
+function UsingVideo() {    
     return (
         <div id="pageWrapper">
             <div id="leftSideWrapper" className="sideWrapper">
                 <Video />
-                <Hyperparameters />
             </div>
+
+            <div className="verticalDivider"></div>
 
             <div id="rightSideWrapper" className="sideWrapper">
                 <FFT />
@@ -159,13 +155,17 @@ function Video() {
 
         let pi = Math.PI
         let arrowHeadAngle = pi / 4 // 45 deg
-        // todo: arrowheadline length depends on magnitude 
-        // todo: magnitude must be greater than some amount
-        let arrowHeadLineLength = 20
         const dx = x2 - x1
         const dy = y2 - y1
-
         let arrowAngle = Math.atan2(dy, dx)
+
+        let magnitude = Math.sqrt((dx * dx) + (dy * dy))
+        console.log(magnitude)
+        // todo: arrowheadline length depends on magnitude
+        // todo: magnitude must be greater than some amount
+        let arrowHeadLineLength = magnitude / 5
+        canvasContext.lineWidth = magnitude / 50;
+
 
         let arrowHeadAngle1 = arrowAngle + pi * 135 / 180
         let arrowHeadAngle2 = arrowAngle + pi * 225 / 180
@@ -176,14 +176,14 @@ function Video() {
         let arrowHead2x = x2 + arrowHeadLineLength * Math.cos(arrowHeadAngle2)
         let arrowHead2y = y2 + arrowHeadLineLength * Math.sin(arrowHeadAngle2)
 
+        // console.log("lineWidth: " + canvasContext.lineWidth)
         canvasContext.beginPath()
         canvasContext.moveTo(x1, y1);
         canvasContext.lineTo(x2, y2);
-        canvasContext.lineTo(arrowHead1x, arrowHead1y);
-        
-        canvasContext.moveTo(x2, y2);
+        // canvasContext.lineWidth = canvasContext.lineWidth + 3.0;
         canvasContext.lineTo(arrowHead2x, arrowHead2y);
-        canvasContext.lineWidth = 100;
+        canvasContext.moveTo(arrowHead1x, arrowHead1y);
+        canvasContext.lineTo(x2, y2);
         canvasContext.stroke()
 
     }
@@ -252,8 +252,12 @@ function Video() {
         const video = videoRef.current
         if (!video) return
         video.onloadedmetadata = () => {
-            const width = video.videoWidth
-            const height = video.videoHeight
+            // const width = video.videoWidth
+            // const height = video.videoHeight
+            const windowWidth = window.innerWidth / 3;
+            const aspectRatio = video.videoHeight / (1.0 * video.videoWidth)
+            const width = windowWidth - 50
+            const height = aspectRatio * width
             // console.log("width, height: ")
             // console.log(width)
             // console.log(height)
@@ -262,6 +266,7 @@ function Video() {
         }
     }, [])
 
+    
 
     return (
         <div>
@@ -292,12 +297,19 @@ function Video() {
     )
 }
 
+function Tabs() {
+    return (
+        <div id="tabs">
 
-function Hyperparameters() {
+        </div>
+    )
+}
+
+function Settings() {
     
     return (
         <div className="container hyp">
-            {/* <img></img> */}
+
             hi
         </div>
     )
