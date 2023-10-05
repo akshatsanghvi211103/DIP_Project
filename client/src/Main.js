@@ -18,6 +18,7 @@ function Main() {
         <>
             <Header />
             <UsingVideo />
+            <Tabs />
         </>
     )
 }
@@ -34,13 +35,13 @@ function Header() {
 function UsingVideo() {    
     return (
         <div id="pageWrapper">
-            <div id="leftSideWrapper" className="sideWrapper">
+            <div id="leftSideWrapper" className="sideWrapper flex">
                 <Video />
             </div>
 
             <div className="verticalDivider"></div>
 
-            <div id="rightSideWrapper" className="sideWrapper">
+            <div id="rightSideWrapper" className="sideWrapper flex">
                 <FFT />
             </div>
         </div>
@@ -298,9 +299,19 @@ function Video() {
 }
 
 function Tabs() {
+    const [active, setActive] = useState(0)
+
     return (
         <div id="tabs">
-
+            <div className={`tab flex ${(active == 0) ? "activeTab" : ""}`}>
+                {(active == 0) ? "Settings" : "⚙️"}
+            </div>
+            <div className={`tab flex ${(active == 1) ? "activeTab" : ""}`}>
+                {(active == 1) ? "Fourier Transform" : "FFT"}
+            </div>
+            <div className={`tab flex ${(active == 2) ? "activeTab" : ""}`}>
+                {(active == 2) ? "Power Spectrum" : "PS"}
+            </div>
         </div>
     )
 }
@@ -308,7 +319,7 @@ function Tabs() {
 function Settings() {
     
     return (
-        <div className="container hyp">
+        <div className="container flex hyp">
 
             hi
         </div>
@@ -317,7 +328,7 @@ function Settings() {
 
 function FFT() {
     return (
-        <div className="container">
+        <div className="container flex">
             {/* <img></img> */}
             yo
         </div>

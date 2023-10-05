@@ -26,6 +26,12 @@ body {
     height: 100%;
 }
 
+.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #header {
     width: 100%;
     height: var(--headerSize);
@@ -48,9 +54,6 @@ body {
 }
 
 .sideWrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
     height: 100%;
     /* height: calc(100% - var(--globalPadding) - var(--headerSize)); */
@@ -64,24 +67,10 @@ body {
     width: calc(100% - var(--leftSize));
 }
 
-#videoContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: fit-content;
-    height: fit-content
-
-}
-
 .container {
     border-radius: 5px;
     height: fit-content;
     width: fit-content;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .video {
@@ -108,5 +97,28 @@ body {
 }
 
 #tabs {
-    
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: end;
+    top: 50%;
+    right: 5px;
+
+    /* background-color: red; */
+    transform: translateY(-50%);
+
+    height: 100px;
+    width: 40px;
+}
+
+.tab {
+    border-radius: 5px;
+    border: 1px solid #cccbcc;
+    height: 20px;
+    width: 40px;
+}
+
+.activeTab {
+    width: 80px;
 }
