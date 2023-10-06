@@ -18,7 +18,6 @@ function Main() {
         <>
             <Header />
             <UsingVideo />
-            <Tabs />
             <img className="noise"></img>
             <Blobs />
 
@@ -37,7 +36,7 @@ function Header() {
 
 function Blobs() {
     return (
-        <div className="blob-cont flex">
+        <div id="blobs" className="flex">
             <div className="blob circle1"></div>
             <div className="blob circle2"></div>
         </div>
@@ -45,6 +44,8 @@ function Blobs() {
 }
 
 function UsingVideo() {    
+    const [active, setActive] = useState(0)
+
     return (
         <div id="pageWrapper" className="flex">
             <div id="leftSideWrapper" className="sideWrapper flex">
@@ -54,7 +55,30 @@ function UsingVideo() {
             <div className="verticalDivider"></div>
 
             <div id="rightSideWrapper" className="sideWrapper flex">
-                <FFT />
+                <div className="container containerShadow flex">
+                    {(active == 0) && <Settings />}
+                    {(active == 1) && <FFT />}
+                    {(active == 2) && <PS />}
+                </div>
+            </div>
+
+
+            <div id="tabs">
+                <div className={`tab flex ${(active == 0) ? "activeTab" : ""}`}
+                    onClick={() => setActive(0)}
+                    >
+                    {(active == 0) ? "Settings" : "Settings"}
+                </div>
+                <div className={`tab flex ${(active == 1) ? "activeTab" : ""}`}
+                    onClick={() => setActive(1)}
+                    >
+                    {(active == 1) ? "Fourier" : "FFT"}
+                </div>
+                <div className={`tab flex ${(active == 2) ? "activeTab" : ""}`}
+                    onClick={() => setActive(2)}                
+                    >
+                    {(active == 2) ? "Power" : "PS"}
+                </div>
             </div>
         </div>
     )
@@ -283,7 +307,7 @@ function Video() {
     
 
     return (
-        <div className="container">
+        <div className="container containerShadow">
             <video
                 ref={videoRef}
                 controls
@@ -311,34 +335,10 @@ function Video() {
     )
 }
 
-function Tabs() {
-    const [active, setActive] = useState(0)
-
-    return (
-        <div id="tabs">
-            <div className={`tab flex ${(active == 0) ? "activeTab" : ""}`}
-                onClick={() => setActive(0)}
-                >
-                {(active == 0) ? "Settings" : "⚙️"}
-            </div>
-            <div className={`tab flex ${(active == 1) ? "activeTab" : ""}`}
-                onClick={() => setActive(1)}
-                >
-                {(active == 1) ? "Fourier" : "FFT"}
-            </div>
-            <div className={`tab flex ${(active == 2) ? "activeTab" : ""}`}
-                onClick={() => setActive(2)}                
-                >
-                {(active == 2) ? "Power Spectrum" : "PS"}
-            </div>
-        </div>
-    )
-}
-
 function Settings() {
     
     return (
-        <div className="container flex hyp">
+        <div className="container flex settings">
 
             hi
         </div>
@@ -347,10 +347,19 @@ function Settings() {
 
 function FFT() {
     return (
-        <div className="container flex">
-            {/* <img></img> */}
-            yo
-        </div>
+        <>
+
+            fft
+        </>
+    )
+}
+
+function PS() {
+    return (
+        <>
+
+            ps
+        </>
     )
 }
 

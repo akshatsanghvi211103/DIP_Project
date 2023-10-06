@@ -67,13 +67,21 @@ body {
     width: calc(100% - var(--leftSize));
 }
 
-.container {
+.containerShadow {
+    box-shadow: 0px 0px 300px -66px rgba(204, 203, 204, 0.59);
     border-radius: 15px;
     padding: 10px;
     border: 1px solid #cccbcc;
+}
+
+.container {
     height: fit-content;
     width: fit-content;
-    box-shadow: 0px 0px 300px -66px rgba(204, 203, 204, 0.59);
+}
+
+.settings {
+    height: 60vh;
+    width: 30vw;
 }
 
 .video {
@@ -112,7 +120,7 @@ body {
     /* background-color: red; */
     transform: translateY(-50%);
 
-    height: 500px;
+    height: 450px;
     width: 40px;
 }
 
@@ -131,7 +139,8 @@ body {
 
 .tab:hover {
     transform: scale(1.1);
-    transition: all 0.2s ease-in-out
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
 }
 
 .activeTab {
@@ -161,8 +170,7 @@ body {
 }
 
 
-/* Blobs */
-.blob-cont {
+#blobs {
   z-index: -2;
   height: 100vh;
   width: 100vw;
@@ -172,7 +180,6 @@ body {
   left: 0px;
 
 }
-
 
 .blob {
     border-radius: 100%;
@@ -203,42 +210,6 @@ body {
     animation: circle2Animation 8s infinite ease;
 }
 
-.circle3 {
-    background-color: #cccbcc;
-    position: absolute;
-    right: 0;
-    top: 300px;
-    height: 250px;
-    width: 200px;
-    filter: blur(200px);
-
-    animation: circle3Animation 8s infinite linear;
-}
-
-.circle4 {
-    background-color: #222322;
-    position: absolute;
-    right: 0;
-    top: 300px;
-    height: 250px;
-    width: 200px;
-    filter: blur(200px);
-
-    animation: circle4Animation 8s infinite linear;
-}
-
-.circle5 {
-    background-color: #222322;
-    position: absolute;
-    top: 200px;
-    left: 200px;
-    height: 300px;
-    width: 300px;
-    filter: blur(250px);
-
-    animation: circle5Animation 8s infinite ease;
-}
-
 @keyframes circle1Animation {
   0% {top: 200px; left: 100px; transform: scale(1);}
   30% {top: 300px; left: 150px; transform: scale(1.2);}
@@ -253,25 +224,6 @@ body {
   100% {top: 80px; right: -20px; transform: scale(1.2);}
 }
 
-@keyframes circle3Animation {
-  0% {top: 250px; right: 0px; transform: scale(1);}
-  30% {top: 150px; right: 150px;transform: scale(1.4);}
-  60% {top: 250px; right: 100px;transform: scale(1);}
-  100% {top: 250px; right: 0px; transform: scale(1);}
-}
 
-@keyframes circle4Animation {
-  0% {top: 300px; right: 250px; transform: scale(1);}
-  30% {top: 100px; right: 150px;transform: scale(1.4);}
-  60% {top: 120px; right: 30px;transform: scale(1);}
-  100% {top: 300px; right: 250px; transform: scale(1);}
-}
-
-@keyframes circle5Animation {
-  0% {top: 200px; left: 200px; transform: scale(1);}
-  30% {top: 300px; left: 150px; transform: scale(1.8);}
-  60% {top: 100px; left: 200px; transform: scale(1.6);}
-  100% {top: 200px; left: 200px; transform: scale(1);}
-}
 
 
