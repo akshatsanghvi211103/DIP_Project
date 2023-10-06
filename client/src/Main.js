@@ -7,8 +7,8 @@ import React, {
 } from "react";
 
 import "./App.css"
-import noise from "./nnnoise.svg"
-import bobble from "./bobble.mp4"
+import noise from "./assets/nnnoise.svg"
+import bobble from "./assets/bobble.mp4"
 
 
 function Main() {
@@ -19,12 +19,8 @@ function Main() {
             <Header />
             <UsingVideo />
             <Tabs />
-            <img
-                src={noise}
-                className="noise"
-                >
-                    
-                </img>
+            <img className="noise"></img>
+            <Blobs />
 
         </>
     )
@@ -35,6 +31,15 @@ function Header() {
     return (
         <div id="header" className="flex">
             Interactive 2D Video Dynamics
+        </div>
+    )
+}
+
+function Blobs() {
+    return (
+        <div className="blob-cont flex">
+            <div className="blob circle1"></div>
+            <div className="blob circle2"></div>
         </div>
     )
 }
@@ -278,7 +283,7 @@ function Video() {
     
 
     return (
-        <div>
+        <div className="container">
             <video
                 ref={videoRef}
                 controls
