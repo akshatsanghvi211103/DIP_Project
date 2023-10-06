@@ -3,6 +3,9 @@
     --leftSize: 50%;
     --headerSize: 50px;
     --globalPadding: 10px;
+    --yellow: #EDB74D;
+    --red: #EB6666;
+    --green: #6FB18A;
 }
 
 html, head, body {
@@ -20,6 +23,7 @@ head, body {
 body {
     height: 100%;
     width: 100%;
+    filter: url(#noiseFilter);
 }
 
 #root {
@@ -33,20 +37,15 @@ body {
 }
 
 #header {
-    width: 100%;
+    width: 95%;
+    margin-left: 2.5%;
     height: var(--headerSize);
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
     border-bottom: 1px solid #cccbcc;
+
 }
 
 #pageWrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: row;
 
     /* height: 100%; */
@@ -91,7 +90,8 @@ body {
 }
 
 .verticalDivider {
-    height: 100%;
+    height: 95%;
+    margin-top: -2.5%;
     width: 1px;
     background-color: #cccbcc;
 }
@@ -100,7 +100,7 @@ body {
     position: absolute;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-around;
     align-items: end;
     top: 50%;
     right: 5px;
@@ -108,7 +108,7 @@ body {
     /* background-color: red; */
     transform: translateY(-50%);
 
-    height: 100px;
+    height: 80px;
     width: 40px;
 }
 
@@ -116,9 +116,16 @@ body {
     border-radius: 5px;
     border: 1px solid #cccbcc;
     height: 20px;
-    width: 40px;
+    width: 80px;
+    font-size: 9px;
 }
 
 .activeTab {
-    width: 80px;
+    width: 120px;
+
+    transition: all 0.1s ease-in-out
+}
+
+.noise {
+    /* z-index: -2; */
 }

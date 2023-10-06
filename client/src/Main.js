@@ -7,7 +7,7 @@ import React, {
 } from "react";
 
 import "./App.css"
-import image from "./frame.jpg"
+import noise from "./nnnoise.svg"
 import bobble from "./bobble.mp4"
 
 
@@ -19,6 +19,13 @@ function Main() {
             <Header />
             <UsingVideo />
             <Tabs />
+            <img
+                src={noise}
+                className="noise"
+                >
+                    
+                </img>
+
         </>
     )
 }
@@ -26,7 +33,7 @@ function Main() {
 function Header() {
 
     return (
-        <div id="header">
+        <div id="header" className="flex">
             Interactive 2D Video Dynamics
         </div>
     )
@@ -34,7 +41,7 @@ function Header() {
 
 function UsingVideo() {    
     return (
-        <div id="pageWrapper">
+        <div id="pageWrapper" className="flex">
             <div id="leftSideWrapper" className="sideWrapper flex">
                 <Video />
             </div>
@@ -160,12 +167,13 @@ function Video() {
         const dy = y2 - y1
         let arrowAngle = Math.atan2(dy, dx)
 
-        let magnitude = Math.sqrt((dx * dx) + (dy * dy))
-        console.log(magnitude)
+        // let magnitude = Math.sqrt((dx * dx) + (dy * dy))
+        // console.log(magnitude)
         // todo: arrowheadline length depends on magnitude
         // todo: magnitude must be greater than some amount
-        let arrowHeadLineLength = magnitude / 5
-        canvasContext.lineWidth = magnitude / 50;
+        // let arrowHeadLineLength = magnitude / 5
+        // canvasContext.lineWidth = magnitude / 50;
+        let arrowHeadLineLength = 10;
 
 
         let arrowHeadAngle1 = arrowAngle + pi * 135 / 180
@@ -182,9 +190,9 @@ function Video() {
         canvasContext.moveTo(x1, y1);
         canvasContext.lineTo(x2, y2);
         // canvasContext.lineWidth = canvasContext.lineWidth + 3.0;
+        canvasContext.lineTo(arrowHead1x, arrowHead1y);
+        canvasContext.moveTo(x2, y2);
         canvasContext.lineTo(arrowHead2x, arrowHead2y);
-        canvasContext.moveTo(arrowHead1x, arrowHead1y);
-        canvasContext.lineTo(x2, y2);
         canvasContext.stroke()
 
     }
@@ -303,13 +311,19 @@ function Tabs() {
 
     return (
         <div id="tabs">
-            <div className={`tab flex ${(active == 0) ? "activeTab" : ""}`}>
+            <div className={`tab flex ${(active == 0) ? "activeTab" : ""}`}
+                onClick={() => setActive(0)}
+                >
                 {(active == 0) ? "Settings" : "⚙️"}
             </div>
-            <div className={`tab flex ${(active == 1) ? "activeTab" : ""}`}>
-                {(active == 1) ? "Fourier Transform" : "FFT"}
+            <div className={`tab flex ${(active == 1) ? "activeTab" : ""}`}
+                onClick={() => setActive(1)}
+                >
+                {(active == 1) ? "Fourier" : "FFT"}
             </div>
-            <div className={`tab flex ${(active == 2) ? "activeTab" : ""}`}>
+            <div className={`tab flex ${(active == 2) ? "activeTab" : ""}`}
+                onClick={() => setActive(2)}                
+                >
                 {(active == 2) ? "Power Spectrum" : "PS"}
             </div>
         </div>
