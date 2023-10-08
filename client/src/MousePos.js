@@ -6,8 +6,8 @@ const useMousePosition = () => {
     const slowCursorSize = 40
 
     React.useEffect(() => {
-        const updateMousePosition = ev => {
-            setMousePosition({ x: ev.clientX, y: ev.clientY });
+        const updateMousePosition = e => {
+            setMousePosition({ x: e.clientX, y: e.clientY });
         };
         window.addEventListener('mousemove', updateMousePosition);
         return () => {
