@@ -6,6 +6,8 @@ import React, {
     useState
 } from "react";
 
+import MousePos from "./MousePos"
+
 import "./App.css"
 import noise from "./assets/nnnoise.svg"
 import bobble from "./assets/bobble.mp4"
@@ -20,7 +22,7 @@ function Main() {
             <UsingVideo />
             <img className="noise"></img>
             <Blobs />
-
+            <MousePos />
         </>
     )
 }

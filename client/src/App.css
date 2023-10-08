@@ -224,6 +224,20 @@ body {
   100% {top: 80px; right: -20px; transform: scale(1.2);}
 }
 
+#fastCursor {
+    border-radius: 50%;
+    position: absolute;
+    
+    background-color: #cccbcc;
+    mix-blend-mode: difference;
+    
+}
 
-
-
+#slowCursor {
+    border-radius: 50%;
+    position: absolute;
+    
+    background-color: #222322;
+    mix-blend-mode: difference;
+    transition: all 0.05s linear;
+}
