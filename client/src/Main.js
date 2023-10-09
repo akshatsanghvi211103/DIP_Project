@@ -11,6 +11,7 @@ import MousePos from "./MousePos"
 import "./App.css"
 import noise from "./assets/nnnoise.svg"
 import bobble from "./assets/bobble.mp4"
+import bobbleBIG from "./assets/bobbleBIG.mp4"
 
 
 function Main() {
@@ -22,7 +23,7 @@ function Main() {
             <UsingVideo />
             <img className="noise"></img>
             <Blobs />
-            <MousePos />
+            {/* <MousePos /> */}
         </>
     )
 }
@@ -87,9 +88,6 @@ function UsingVideo() {
 }
 
 function Video() {
-    
-    const videoUrl = 
-        "./frame.png"
 
     const videoIncrement = 1
 
@@ -294,7 +292,7 @@ function Video() {
         video.onloadedmetadata = () => {
             // const width = video.videoWidth
             // const height = video.videoHeight
-            const windowWidth = window.innerWidth / 3;
+            const windowWidth = window.innerWidth / 2 - 100;
             const aspectRatio = video.videoHeight / (1.0 * video.videoWidth)
             const width = windowWidth - 50
             const height = aspectRatio * width
