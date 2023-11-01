@@ -340,7 +340,7 @@ function Settings() {
     return (
         <div className="container flex settings">
 
-            hi
+            TODO: Settings Box
         </div>
     )
 }
