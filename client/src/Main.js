@@ -294,8 +294,14 @@ function Video() {
             // const height = video.videoHeight
             const windowWidth = window.innerWidth / 2 - 100;
             const aspectRatio = video.videoHeight / (1.0 * video.videoWidth)
-            const width = windowWidth - 50
-            const height = aspectRatio * width
+            let width = windowWidth - 50
+            let height = aspectRatio * width
+
+            const maxHeight = window.innerHeight - 100;
+            if (height > maxHeight) {
+                height = maxHeight - 50; 
+                width = height / aspectRatio;
+            }
             // console.log("width, height: ")
             // console.log(width)
             // console.log(height)
@@ -349,7 +355,7 @@ function FFT() {
     return (
         <>
 
-            fft
+            TODO: FFT Box
         </>
     )
 }
@@ -358,7 +364,7 @@ function PS() {
     return (
         <>
 
-            ps
+            TODO: PS Box
         </>
     )
 }
