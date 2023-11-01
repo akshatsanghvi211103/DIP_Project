@@ -1,11 +1,17 @@
 :root {
-    --backgroundColor: #222222;
+    --backgroundColor: #6d6875;
     --leftSize: 50%;
     --headerSize: 50px;
     --globalPadding: 10px;
     --yellow: #EDB74D;
     --red: #EB6666;
     --green: #6FB18A;
+
+    /* --secondary: #e5989b; */
+    --secondary: gray;
+    --tertiary: #ffcdb2;
+    --r1: #ffb4a2;
+    --r2: #b5838d;
 }
 
 html, head, body {
@@ -16,8 +22,9 @@ html, head, body {
 head, body {
     position: fixed;
     background-color: var(--backgroundColor);
-    color: #cccbcc;
+    /* color: var(--secondary); */
     font-family: monospace;
+    color: var(--tertiary);
 }
 
 body {
@@ -42,7 +49,7 @@ body {
     margin-left: 2.5%;
     height: var(--headerSize);
 
-    border-bottom: 1px solid #cccbcc;
+    border-bottom: 1px solid var(--secondary);
 
 }
 
@@ -68,10 +75,10 @@ body {
 }
 
 .containerShadow {
-    box-shadow: 0px 0px 300px -66px rgba(204, 203, 204, 0.59);
+    box-shadow: 0px 0px 300px -66px var(--secondary);
     border-radius: 15px;
     padding: 10px;
-    border: 1px solid #cccbcc;
+    border: 1px solid var(--secondary);
 }
 
 .container {
@@ -81,7 +88,7 @@ body {
 
 .settings {
     height: 60vh;
-    width: 30vw;
+    width: 35vw;
 }
 
 .video {
@@ -105,7 +112,7 @@ body {
     height: 95%;
     margin-top: -2.5%;
     width: 1px;
-    background-color: #cccbcc;
+    background-color: var(--secondary);
 }
 
 #tabs {
@@ -127,7 +134,7 @@ body {
 .tab {
     border-radius: 5px;
     border: 1px solid;
-    border-color: #cccbcc;
+    border-color: var(--secondary);
     height: 100px;
     width: 20px;
     font-size: 9px;
@@ -144,7 +151,7 @@ body {
 }
 
 .activeTab {
-    background-color: #cccbcc;
+    background-color: var(--secondary);
     color: var(--backgroundColor);
 
 
@@ -163,10 +170,12 @@ body {
     top: 0px;
     left: 0px;
 
-    background-image: url("./assets/nnnoise.svg");
-        /* background-image: url("./assets/nnnoise.svg"); */
+    background-color: black;
+    opacity: 40%;
+
+    /* background-image: url("./assets/nnnoise.svg");
         background-size: cover;
-        background-repeat: repeat;
+        background-repeat: repeat; */
 }
 
 
@@ -187,7 +196,7 @@ body {
 }
 
 .circle1 {
-    background-color: #cccbcc;
+    background-color: var(--tertiary);
     position: absolute;
     top: 200px;
     left: 100px;
@@ -199,7 +208,7 @@ body {
 }
 
 .circle2 {
-    background-color: #cccbcc;
+    background-color: var(--tertiary);
     position: absolute;
     top: 80px;
     right: -20px;
@@ -228,7 +237,7 @@ body {
     border-radius: 50%;
     position: absolute;
     
-    background-color: #cccbcc;
+    background-color: var(--secondary);
     mix-blend-mode: difference;
     
 }

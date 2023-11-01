@@ -58,7 +58,7 @@ function UsingVideo() {
             <div className="verticalDivider"></div>
 
             <div id="rightSideWrapper" className="sideWrapper flex">
-                <div className="container containerShadow flex">
+                <div className="container containerShadow flex" style={{marginLeft: "-50px"}}>
                     {(active == 0) && <Settings />}
                     {(active == 1) && <FFT />}
                     {(active == 2) && <PS />}
