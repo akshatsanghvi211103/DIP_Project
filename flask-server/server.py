@@ -60,8 +60,24 @@ def getPixelSpectrum():
             "magnitudesY": magnitudesY
             }
     
-
+@app.get("/powerSpectrum")
+def getPowerSpectrum():
+    displacements = getDisplacements()
+    fft_frequenciesX, mean_magnitudesX = calcPowerSpectrum(displacements, axis=0)
+    fft_frequenciesY, mean_magnitudesY = calcPowerSpectrum(displacements, axis=1)
     
+    fft_frequenciesX = list(fft_frequenciesX)
+    fft_frequenciesY = list(fft_frequenciesY)
+    mean_magnitudesX = list(mean_magnitudesX)
+    mean_magnitudesY = list(mean_magnitudesY)
+    
+    return {
+        "fft_frequenciesX": fft_frequenciesX,
+        "fft_frequenciesY": fft_frequenciesY,
+        "mean_magnitudesX": mean_magnitudesX,
+        "mean_magnitudesY": mean_magnitudesY
+    }
+        
     
     
 def getDisplacements():

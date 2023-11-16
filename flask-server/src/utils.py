@@ -81,3 +81,17 @@ def calcPixelSpectrum(disp, pixel, axis=0):
     magnitude = np.abs(fft_result)
 
     return frequencies, magnitude
+
+
+def calcPowerSpectrum(disp, axis=0):
+    num_frames, H, W, C = disp.shape
+    magnitude_sums = np.zeros(num_frames)
+
+    fft_frequencies = np.fft.fftfreq(num_frames)
+    values = disp[:, :, :, axis].reshape(
+        num_frames, -1)  # shape (num_frames, H*W)
+    values = values - np.mean(values, axis=1, keepdims=True)
+    fft_result = np.fft.fft(values, axis=0)
+
+    mean_magnitudes = np.mean(np.abs(fft_result), axis=1)
+    return fft_frequencies, mean_magnitudes
