@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_cors import CORS
 from src import *
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -19,21 +20,24 @@ def uploadFile():
     print(data)
     video_file_name = data["video_file_name"]
     print(video_file_name)
-    frames = getFramesFromVideo(video_file_name)
+    initial_frame, frames = getFramesFromVideo(video_file_name)
     flows = calcVideoFlow(frames)
     displacements = calcDispFromFlow(flows)
     
-    temp_folder = "./temp"
-    displacements_file_name = "displacements.npy"
-    displacements_file_name_tmp = os.path.join(temp_folder, displacements_file_name)
-    print(displacements_file_name_tmp) 
-    np.save(displacements_file_name_tmp, displacements)
+    frames_file_path = "./temp/frame.npy"
+    displacements_file_name = "./temp/displacements.npy"
+    print(displacements_file_name) 
+    np.save(frames_file_path, initial_frame)
+    np.save(displacements_file_name, displacements)
     
     return {"status": "okay"}
 
-@app.post("/pixelSpectrum")
+@app.get("/pixelSpectrum")
 def getPixelSpectrum():
-    data = request.get_json()
+    data_path = "./temp/config.json"
+    # assert os.path.exists(data_path), "Config file doesnt exist"
+    
+    data = json.loads(data_path)
     pixel = data["pixel"]
     displacements = getDisplacements()
     
@@ -78,7 +82,83 @@ def getPowerSpectrum():
         "mean_magnitudesY": mean_magnitudesY
     }
         
+@app.post("/processArrow")
+def process():
+    data = request.get_json()
+    pixel = data["pixel"]
+    frequencyXIndex = data["frequencyXIndex"]
+    frequencyYIndex = data["frequencyYIndex"]
+    force = data["force"]
+    hyperparameters = data["hyperparameters"]
     
+    displacements = getDisplacements()
+    frame = np.load("./temp/frame.npy")
+    frequencyX = np.load("./temp/frequenciesX.npy")
+    frequencyY = np.load("./temp/frequenciesY.npy")
+    
+    config_file_name = "./temp/config.json"
+    config = {
+        "pixel": pixel,
+        "frequencyXIndex": frequencyXIndex,
+        "frequencyYIndex": frequencyYIndex,
+        "force": force,
+        "hyperparameters": hyperparameters
+    }
+    
+    with open(config_file_name, "w") as f:
+        json.dump(config, f)
+    
+    # print(config)
+    
+    modeX = calcFreqShape(displacements, axis=0, freq_index=frequencyXIndex)
+    modeX = modeX.reshape(-1)
+
+    modeY = calcFreqShape(displacements, axis=1, freq_index=frequencyYIndex)
+    modeY = modeY.reshape(-1)
+    # print(modeX.shape)
+    # print(modeY.shape)
+    
+    # print(frame.shape)
+    
+    print("COMPLETED MODAL SHAPES")
+    chosenFrequencyX = frequencyX[frequencyXIndex]
+    chosenFrequencyY = frequencyY[frequencyYIndex]
+    freq = (abs(chosenFrequencyX), abs(chosenFrequencyY))
+    x, y = calcDisplacment(hyperparameters, freq, pixel, force, modeX, modeY)
+    print("COMPLETED DISPLACEMENT")
+    # print("xy", x.shape, y.shape)
+    
+    frames_shape = frame.shape
+    final_displacement = calcFinalDisplacements(
+        frames_shape, pixel, hyperparameters, x, y, chosenFrequencyX, chosenFrequencyY, modeX, modeY)
+    print(final_displacement.shape)
+    print("COMPLETED FINAL DISPLACEMENT")
+    
+    
+    output_frames = renderOutputVideo(frame, final_displacement)
+    output_video_path = "./temp/output_video.avi"
+    saveFramesToVideo(output_frames, output_video_path)
+    print(output_frames.shape)
+    print("COMPLETED OUTPUT FRAMES")
+    
+    
+
+    
+    return {"status": "okay"}
+        
+        
+    
+    
+    
+    
+def getConfig():
+    config_file_name = "./temp/config.json"
+    assert os.path.exists(config_file_name), "config file does not exist"
+    config = {}
+    with open(config_file_name, "r") as f:
+        config = json.load(f)
+    print(config)
+    return config    
     
 def getDisplacements():
     displacements_file_name = "./temp/displacements.npy"

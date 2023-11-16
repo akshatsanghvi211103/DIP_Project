@@ -32,7 +32,7 @@ def getFramesFromVideo(video_file_name):
     frames = np.array(frames)
     num_frames = frames.shape[0]
     
-    return frames
+    return initial_frame, frames
 
     
     
