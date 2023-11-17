@@ -32,12 +32,13 @@ def uploadFile():
     
     return {"status": "okay"}
 
-@app.get("/pixelSpectrum")
+@app.post("/pixelSpectrum")
 def getPixelSpectrum():
     data_path = "./temp/config.json"
     # assert os.path.exists(data_path), "Config file doesnt exist"
     
-    data = json.loads(data_path)
+    # data = json.loads(data_path)
+    data = request.get_json()
     pixel = data["pixel"]
     displacements = getDisplacements()
     
@@ -93,9 +94,24 @@ def process():
     
     displacements = getDisplacements()
     frame = np.load("./temp/frame.npy")
-    frequencyX = np.load("./temp/frequenciesX.npy")
-    frequencyY = np.load("./temp/frequenciesY.npy")
-    
+    frequencyX_path = "./temp/frequenciesX.npy"
+    frequencyY_path = "./temp/frequenciesY.npy"
+
+    if (os.path.exists(frequencyX_path) and os.path.exists(frequencyY_path)):
+        frequencyX = np.load(frequencyX_path)
+        frequencyY = np.load(frequencyY_path)
+    else: # need to make the files
+        frequencyX, magnitudesX = calcPixelSpectrum(displacements, pixel, axis=0)
+        frequencyY, magnitudesY = calcPixelSpectrum(displacements, pixel, axis=1)
+        frequenciesX_file_path = "./temp/frequenciesX.npy"
+        frequenciesY_file_path = "./temp/frequenciesY.npy"
+        magnitudesX_file_path = "./temp/magnitudesX.npy"
+        magnitudesY_file_path = "./temp/magnitudesY.npy"
+        np.save(frequenciesX_file_path, frequencyX)
+        np.save(frequenciesY_file_path, frequencyY)
+        np.save(magnitudesX_file_path, magnitudesX)
+        np.save(magnitudesY_file_path, magnitudesY)
+        
     config_file_name = "./temp/config.json"
     config = {
         "pixel": pixel,
@@ -107,6 +123,7 @@ def process():
     
     with open(config_file_name, "w") as f:
         json.dump(config, f)
+    
     
     # print(config)
     
