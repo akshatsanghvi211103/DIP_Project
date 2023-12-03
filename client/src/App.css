@@ -1,4 +1,9 @@
 :root {
+
+    --blur_constant: 200px;
+    --circle_blur_offset_w: -10vw;
+    --circle_blur_offset_h: -10vh;
+
     --backgroundColor: #6d6875;
     --leftSize: 50%;
     --headerSize: 50px;
@@ -14,23 +19,28 @@
     --r2: #b5838d;
 }
 
-html, head, body {
+html,
+head,
+body {
     padding: 0px;
     margin: 0px;
 }
 
-head, body {
+head,
+body {
     position: fixed;
     background-color: var(--backgroundColor);
     /* color: var(--secondary); */
     font-family: monospace;
-    color: var(--tertiary);
+    /* color: var(--tertiary); */
+    color: black;
 }
 
 body {
     height: 100%;
     width: 100%;
     /* filter: url(#noiseFilter); */
+    overflow-y: auto;
 
 }
 
@@ -45,11 +55,11 @@ body {
 }
 
 #header {
-    width: 95%;
-    margin-left: 2.5%;
+    width: 100%;
     height: var(--headerSize);
 
     border-bottom: 1px solid var(--secondary);
+    backdrop-filter: blur(50px);
 
 }
 
@@ -84,6 +94,12 @@ body {
 .container {
     height: fit-content;
     width: fit-content;
+
+    /* background-color: #eeeeee; */
+    backdrop-filter: blur(300px);
+    /* opacity: 80%; */
+    /* backdrop-filter: filter(blur(500px)); */
+
 }
 
 .settings {
@@ -111,7 +127,7 @@ body {
 
 .verticalDivider {
     height: 95%;
-    margin-top: -2.5%;
+    margin-top: -5vh;
     width: 1px;
     background-color: var(--secondary);
 }
@@ -140,6 +156,8 @@ body {
     width: 20px;
     font-size: 9px;
 
+    backdrop-filter: blur(100px);
+
     writing-mode: vertical-rl;
     text-orientation: upright;
     transition: all 0.2s ease-in-out
@@ -156,7 +174,6 @@ body {
     color: var(--backgroundColor);
 
 
-
     transition: all 0.1s ease-in-out
 }
 
@@ -164,30 +181,29 @@ body {
 .noise {
     z-index: -1;
     position: absolute;
-    height: 100%;
-    width: 100%;
+    height: 100vh;
+    width: 100vw;
     opacity: 60%;
 
     top: 0px;
     left: 0px;
 
-    background-color: black;
     opacity: 40%;
 
-    /* background-image: url("./assets/nnnoise.svg");
-        background-size: cover;
-        background-repeat: repeat; */
+    background-image: url("./assets/nnnoise.svg");
+    background-size: contain;
+    background-repeat: repeat;
 }
 
 
 #blobs {
-  z-index: -2;
-  height: 100vh;
-  width: 100vw;
-  position: absolute;
+    z-index: -2;
+        height: 100vh;
+        width: 100vw;
+        position: absolute;
 
-  top: 0px;
-  left: 0px;
+    top: 0px;
+        left: 0px;
 
 }
 
@@ -197,57 +213,130 @@ body {
 }
 
 .circle1 {
-    background-color: var(--tertiary);
+    background-color: var(--r1);
     position: absolute;
-    top: 200px;
-    left: 100px;
-    height: 400px;
-    width: 200px;
-    filter: blur(120px);
-
-    animation: circle1Animation 8s infinite ease;
+    top: var(--circle_blur_offset_h);
+    left: var(--circle_blur_offset_w);
+    height: 80vh;
+    width: 80vw;
+    /* filter: blur(120px); */
+    filter: blur(var(--blur_constant));
+    /* animation: circle1Animation 8s infinite ease; */
 }
 
 .circle2 {
-    background-color: var(--tertiary);
+    background-color: var(--r2);
     position: absolute;
-    top: 80px;
-    right: -20px;
-    height: 200px;
-    width: 250px;
-    filter: blur(130px);
-    
-    animation: circle2Animation 8s infinite ease;
+    bottom: var(--circle_blur_offset_h);
+    right: var(--circle_blur_offset_w);
+    height: 80vh;
+    width: 80vw;
+    filter: blur(var(--blur_constant));
+    /* backdrop-filter: blur(10px); */
+    /* animation: circle2Animation 8s infinite ease; */
+    }
+
+.circle3 {
+    background-color: var(--red);
+    position: absolute;
+    bottom: var(--circle_blur_offset_h);
+    left: var(--circle_blur_offset_w);
+    height: 80vh;
+    width: 80vw;
+    filter: blur(var(--blur_constant));
+    /* backdrop-filter: blur(10px); */
+    /* animation: circle2Animation 8s infinite ease; */
 }
 
+.circle4 {
+    background-color: var(--green);
+    position: absolute;
+    top: var(--circle_blur_offset_h);
+    right: var(--circle_blur_offset_w);
+    height: 80vh;
+    width: 80vw;
+    filter: blur(var(--blur_constant));
+    /* backdrop-filter: blur(10px); */
+    /* animation: circle2Animation 8s infinite ease; */
+}
+    
 @keyframes circle1Animation {
-  0% {top: 200px; left: 100px; transform: scale(1);}
-  40% {top: 300px; left: 150px; transform: scale(1.2);}
-  80% {top: 100px; left: 200px; transform: scale(1.3);}
-  100% {top: 200px; left: 100px; transform: scale(1);}
+    0% {
+        top: 200px;
+        left: 100px;
+        transform: scale(1);
+    }
+
+    40% {
+        top: 300px;
+        left: 150px;
+        transform: scale(1.2);
+    }
+
+    80% {
+        top: 100px;
+        left: 200px;
+        transform: scale(1.3);
+    }
+
+                                100% {
+                                    top: 200px;
+                                    left: 100px;
+                                    transform: scale(1);
+                                }
 }
 
 @keyframes circle2Animation {
-  0% {top: 80px; right: -20px; transform: scale(1.2);}
-  30% {top: 300px; right: -20px;transform: scale(1);}
-  60% {top: 200px; right: 100px;transform: scale(1);}
-  100% {top: 80px; right: -20px; transform: scale(1.2);}
+    0% {
+            top: 80px;
+            right: -20px;
+            transform: scale(1.2);
+        }
+    
+        30% {
+            top: 300px;
+            right: -20px;
+            transform: scale(1);
+        }
+    
+        60% {
+            top: 200px;
+            right: 100px;
+            transform: scale(1);
+        }
+    
+        100% {
+            top: 80px;
+            right: -20px;
+            transform: scale(1.2);
+        }
 }
 
 #fastCursor {
     border-radius: 50%;
     position: absolute;
-    
+
     background-color: var(--secondary);
     mix-blend-mode: difference;
-    
+
 }
 
 #slowCursor {
     border-radius: 50%;
     position: absolute;
-    
+
     background-color: #222322;
     mix-blend-mode: difference;
     transition: all 0.05s linear;
+}
+
+.screen {
+    height: 100vh;
+    width: 100vw;
+
+    background-color: white;
+}
+
+#screenContainer {
+    flex-direction: column;
 }

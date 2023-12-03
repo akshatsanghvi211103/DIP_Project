@@ -19,11 +19,14 @@ function Main() {
     
     return (
         <>
+
             <Header />
             <UsingVideo />
             <img className="noise"></img>
             <Blobs />
             {/* <MousePos /> */}
+            <div className="screen"></div>
+            <div className="screen"></div>
         </>
     )
 }
@@ -42,6 +45,8 @@ function Blobs() {
         <div id="blobs" className="flex">
             <div className="blob circle1"></div>
             <div className="blob circle2"></div>
+            <div className="blob circle3"></div>
+            <div className="blob circle4"></div>
         </div>
     )
 }
