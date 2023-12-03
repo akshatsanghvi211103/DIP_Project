@@ -25,8 +25,8 @@ function Main() {
             <img className="noise"></img>
             <Blobs />
             {/* <MousePos /> */}
-            <div className="screen"></div>
-            <div className="screen"></div>
+            {/* <div className="screen"></div>
+            <div className="screen"></div> */}
         </>
     )
 }
@@ -42,7 +42,7 @@ function Header() {
 
 function Blobs() {
     return (
-        <div id="blobs" className="flex">
+        <div className="blobs flex">
             <div className="blob circle1"></div>
             <div className="blob circle2"></div>
             <div className="blob circle3"></div>
@@ -88,6 +88,7 @@ function UsingVideo() {
                     {(active == 2) ? "Power" : "PS"}
                 </div>
             </div>
+
         </div>
     )
 }
