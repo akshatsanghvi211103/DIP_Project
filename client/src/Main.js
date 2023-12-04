@@ -29,12 +29,44 @@ function Main() {
                 <Blobs />
                 <Settings />
 
+                <Graphs />
+
             </div>
             {/* <MousePos /> */}
             {/* <div className="screen"></div>
             <div className="screen"></div> */}
         </>
     )
+}
+
+function Graphs() {
+    const [fX, setfX] = useState([]);
+    const [fY, setfY] = useState([]);
+    const [mX, setmX] = useState([]);
+    const [mY, setmY] = useState([]);
+
+    useEffect(() => {
+        const handleStorage = () => {
+            let frequenciesX = localStorage.getItem("fX")
+            let frequenciesY = localStorage.getItem("fY")
+            let magnitudesX = localStorage.getItem("mX")
+            let magnitudesY = localStorage.getItem("mY")
+
+            setfX(frequenciesX);
+            setfY(frequenciesY);
+            setmX(magnitudesX);
+            setmY(magnitudesY);
+        }
+
+        window.addEventListener('storage', handleStorage())
+        return () => window.removeEventListener('storage', handleStorage())
+    }, [])
+
+    return (
+        <>
+            
+        </>
+    );
 }
 
 function Header() {
@@ -100,6 +132,7 @@ function Video() {
     
     const [size, setSize] = useState({ width: 0, height: 0})
     const [targetOpacity, setTargetOpacity] = useState(0)
+    const [file, setFile] = useState(bobble)
     const [display, setDisplay] = useState("none");
     const [pointerEvents, setPointerEvents] = useState("none")
 
@@ -167,13 +200,26 @@ function Video() {
         return [x, y]
     }
 
-    const mouseDown = (e) => {
+    const mouseDown = async (e) => {
         let point = getPosition(e)
         const x = point[0]
         const y = point[1]
         // console.log(x, y)
         setPoint1({x, y})
         setMouseState(1)
+
+        let response1 = await getPixelSpectrum([x, y])
+        let frequenciesX = response1["frequenciesX"];
+        let frequenciesY = response1["frequenciesY"];
+        let magnitudesX = response1["magnitudesX"];
+        let magnitudesY = response1["magnitudesY"];
+
+        localStorage.setItem("fX", frequenciesX)
+        localStorage.setItem("fY", frequenciesY)
+        localStorage.setItem("mX", frequenciesX)
+        localStorage.setItem("mY", frequenciesY)
+
+        console.log(response1)
 
     }
 
@@ -182,7 +228,9 @@ function Video() {
         const x = point[0]
         const y = point[1]
         // console.log(x, y)
-        setPoint2({x, y})
+        setPoint2({ x, y })
+
+
         setMouseState(0)
     }
 
@@ -227,6 +275,7 @@ function Video() {
         canvasContext.moveTo(x2, y2);
         canvasContext.lineTo(arrowHead2x, arrowHead2y);
         canvasContext.stroke()
+
 
     }
 
@@ -290,6 +339,104 @@ function Video() {
         }
     }, [display, getImage, reset, showVideo]);
 
+    const uploadVideo = async () => {
+        // let video_file_name = "bobble_small.mp4"
+        const data = {
+            video_file_name: "bobble_small.mp4"
+        }
+
+        console.log(JSON.stringify(data))
+
+
+        const response = await fetch("/upload", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify(data)
+        })
+
+        if (response.ok) {
+            console.log("Got Response")
+            return 1;
+        } else {
+            console.log("Did Not get Response")
+            return 0;
+        }
+    }
+
+    // const processArrow = async (
+    //         pixel = [85, 155], freqXIndex = 34, freqYIndex = 34,
+    //         force = [0.5, 0.5], amp = 3, time = 160, mass = 1,
+    //         damp = 0.095, width = 415, sample = 1
+    //     ) => {
+
+    //     const data = {
+
+    //         "pixel": pixel,
+    //         "frequencyXIndex": freqXIndex,
+    //         "frequencyYIndex": freqYIndex,
+    //         "force": force,
+    //         "hyperparameters": {
+    //                 "amplification" : amp, 
+    //                 "time" : time, 
+    //                 "mass" : mass, 
+    //                 "damp" : damp, 
+    //                 "width": width, 
+    //                 "sample": sample
+    //             }
+            
+    //     }
+
+    //     console.log(JSON.stringify(data))
+
+
+    //     const response = await fetch("/processArrow", {
+    //         method: "POST",
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Access-Control-Allow-Origin': '*'
+    //         },
+    //         body: JSON.stringify(data)
+    //     })
+
+    //     if (response.ok) {
+    //         console.log("Got Response")
+    //         return 1;
+    //     } else {
+    //         console.log("Did Not get Response")
+    //         return 0;
+    //     }
+    // }
+
+    const getPixelSpectrum = async (pixel) => {
+        // let video_file_name = "bobble_small.mp4"
+        const data = {
+            "pixel": pixel,            
+        }
+
+        console.log(JSON.stringify(data))
+
+
+        const response = await fetch("/pixelSpectrum", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify(data)
+        })
+
+        if (response.ok) {
+            console.log("Got Pixel Spectrum Response")
+            return response
+        } else {
+            console.log("Did Not get Response")
+            return null;
+        }
+    }
+
     useEffect(() => {
         const video = videoRef.current
         if (!video) return
@@ -315,7 +462,26 @@ function Video() {
             // console.log('\n')
             setSize({width, height})
         }
+
+        let response = uploadVideo();
+        if (response) {
+            console.log("Done");
+        } else {
+            console.log("Fail");
+        }
+
+
+
     }, [])
+
+    const onFileChange = (e) => {
+        // setFile(e.target.files[0])
+        // console.log(e.target.files[0])
+        const file = e.target.files[0];
+        const url = URL.createObjectURL(file);
+        setFile(url);
+
+    }
 
     
 
@@ -323,13 +489,13 @@ function Video() {
         <>
             <div id="leftSideWrapper" className="sideWrapper flex col">
                 <div className="video_buttons flex row video_buttons1">
-                    <input type="file"></input>
+                    <input type="file" onChange={onFileChange} />
                 </div>
                 <div className="container containerShadow" style={{...size}}>
                     <video
                         ref={videoRef}
                         controls
-                        src={bobble}
+                        src={file}
                         style={{
                             position: "absolute",
                             // borderRadius: "5px",

@@ -11,7 +11,7 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 @app.route("/getOutput")
-def getOutput(point, force):
+def getOutput():
     return {"members": ["Member1", "Member2", "Member3"]}
 
 @app.post("/upload")
@@ -31,6 +31,25 @@ def uploadFile():
     np.save(displacements_file_name, displacements)
     
     return {"status": "okay"}
+
+
+# @app.post("/uploadNew")
+# def uploadFileNew():
+#     data = request.get_json()
+#     print(data)
+#     video_file_name = data["video_file_name"]
+#     print(video_file_name)
+#     initial_frame, frames = getFramesFromVideo(video_file_name)
+#     flows = calcVideoFlow(frames)
+#     displacements = calcDispFromFlow(flows)
+
+#     frames_file_path = "./temp/frame.npy"
+#     displacements_file_name = "./temp/displacements.npy"
+#     print(displacements_file_name)
+#     np.save(frames_file_path, initial_frame)
+#     np.save(displacements_file_name, displacements)
+
+#     return {"status": "okay"}
 
 @app.post("/pixelSpectrum")
 def getPixelSpectrum():
