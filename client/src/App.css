@@ -6,6 +6,7 @@
 
     --first_section_h: 70vh;
     --page_margin: 50px;
+    --page_size: 300vh;
 
     --backgroundColor: #6d6875;
     --leftSize: 50%;
@@ -77,8 +78,10 @@ body {
 
 #pageWrapper {
     margin: var(--page_margin);
-    height: calc(100% - var(--globalPadding) - var(--headerSize));
+    /* height: calc(100% - var(--globalPadding) - var(--headerSize)); */
+    height: var(--page_size);
     width: calc(100% - 2 * var(--page_margin));
+    justify-content: left;
 
     border-radius: 10px;
 }
@@ -86,7 +89,7 @@ body {
 .pageWrapperBackground {
     position: absolute;
     margin: var(--page_margin);
-    height: calc(100% - var(--globalPadding) - var(--headerSize));
+    height: var(--page_size);
     width: calc(100% - 2 * var(--page_margin));
     background-color: white;
     opacity: 50%;
@@ -96,7 +99,8 @@ body {
 }
 
 #videosWrapper {
-
+    margin-top: 150px;
+    margin-bottom: 150px;
     /* height: 100%; */
     height: calc(var(--first_section_h) - var(--globalPadding) - var(--headerSize));
     width: 100%;
@@ -229,11 +233,11 @@ body {
 .noise {
     z-index: -1;
     position: absolute;
-    height: 100vh;
-    width: 100vw;
+    height: calc(var(--page_size) + var(--headerSize));
+    width: 100%;
     opacity: 60%;
 
-    top: 0px;
+    top: var(--headerSize);
     left: 0px;
 
     opacity: 40%;
@@ -245,6 +249,10 @@ body {
 
 .noise2 {
     top: 100vh;
+}
+
+.noise3 {
+    top: 200vh;
 }
 
 
@@ -415,5 +423,5 @@ input[type=file]::file-selector-button:hover {
 
 #graphs {
     width: 100%;
-    height: 50vh;
+    height: 80vh;
 }

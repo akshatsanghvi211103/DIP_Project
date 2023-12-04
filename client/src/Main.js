@@ -13,7 +13,7 @@ import noise from "./assets/nnnoise.svg"
 import bobble from "./assets/bobble.mp4"
 import bobbleBIG from "./assets/bobbleBIG.mp4"
 
-import { LineChart, CartesianGrid, Line, XAxis, YAxis, Tooltip, Legend} from "recharts";
+import { LineChart, CartesianGrid, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer} from "recharts";
 
 
 
@@ -28,7 +28,7 @@ function Main() {
             <div id="pageWrapper" className="flex col">
                 <UsingVideo />
                 <img className="noise"></img>
-                <img className="noise noise2"></img>
+                {/* <img className="noise noise2"></img> */}
                 <Blobs />
                 <Settings />
 
@@ -406,6 +406,32 @@ function Video() {
             })
     }
 
+    const getPowerSpectrum = async () => {
+        const response = await fetch("/pixelSpectrum", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+        })
+            .then((response) => {
+                if (!response.ok) throw new Error(response.status)
+                else return response.json()
+            })
+            .then((data) => {
+                console.log(data)
+                data = JSON.stringify(data);
+                localStorage.setItem("PoS", data)
+                window.dispatchEvent(new Event('storage'))
+
+            })
+            .catch((error) => {
+                console.log("Error: " + error);
+
+            })
+    }
+
+
     useEffect(() => {
         const video = videoRef.current
         if (!video) return
@@ -439,6 +465,8 @@ function Video() {
             console.log("Fail");
         }
 
+        getPowerSpectrum();
+
 
 
     }, [])
@@ -455,9 +483,9 @@ function Video() {
     return (
         <>
             <div id="leftSideWrapper" className="sideWrapper flex col">
-                <div className="video_buttons flex row video_buttons1">
+                {/* <div className="video_buttons flex row video_buttons1">
                     <input type="file" onChange={onFileChange} />
-                </div>
+                </div> */}
                 <div className="container containerShadow" style={{...size}}>
                     <video
                         ref={videoRef}
@@ -497,9 +525,7 @@ function Video() {
     )
 }
 
-
-
-function Graphs() {    
+function PixelSpectrum() {
     const [psX, setPSX] = useState([]);
     const [psY, setPSY] = useState([]);
 
@@ -542,28 +568,22 @@ function Graphs() {
             // setmY(magnitudesY);
 
             let ps1 = localStorage.getItem("PS");
-            ps1 = JSON.parse(ps1)
+            let psX1 = JSON.parse(ps1)
+            let psY1 = JSON.parse(ps1)
+            console.log("psx1", psX1)
+            let psX2 = convertToSingleElementDictionaries(psX1);
+            let psY2 = convertToSingleElementDictionaries(psY1);
+
+            console.log("psX1", ps1, psX1)
+            // psX2.sort((a, b) => a["magnitudesX"] - b["magnitudesX"])
+            // psY2.sort((a, b) => a["magnitudesY"] - b["magnitudesY"])
 
             // Output: List of dictionaries
-            let ps2 = convertToSingleElementDictionaries(ps1);
-            // ps2 = ps2.slice(1, 1)
-            console.log(ps2)
-            // console.log("ps1", ps1, ps1["frequenciesX"])
-            // let indexes = Array.from(
-            //     { length: ps1["frequenciesX"].length + 1 }, (value, index) => index
-            // )
-            // console.log(indexes)
-            setPS(ps2)
 
-                            const data1 = [
-            { x: 0.001, y: 10 },
-            { x: 2, y: 15 },
-            { x: 3, y: 13 },
-            { x: 4, y: 18 },
-            { x: 7, y: 22 },
-                            ];
-            
-            // setPS(data1)
+            console.log("psX2", psX2)
+
+            setPSX(psX2)
+            setPSY(psY2)
                 
         }
 
@@ -571,49 +591,51 @@ function Graphs() {
         return () => window.removeEventListener('storage', handleStorage())
     }, [])
 
-    const data = [
-{ name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
-{ name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
-{ name: 'Page C', uv: 2000, pv: 9800, amt: 2290 },
-{ name: 'Page D', uv: 2780, pv: 3908, amt: 2000 },
-{ name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
-{ name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
-{ name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
-    ];
-    
+    return (
+        <div id="graphs" className="container flex row">
+            <ResponsiveContainer width="90%" height="70%">
+                <h2>Pixel Spectrum (X)</h2>
+                <LineChart width={200} height={400} data={psX}
+                    margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                    <XAxis type="number" dataKey="frequenciesX"
+                        label={{value: "X Frequency", position: "insideBottom"}} />
+                    <YAxis label={{value: "X Magnitude", position: "insideLeft", angle: -90}} />
+                    <Tooltip />
+                    <Legend verticalAlign="top" height={36}  />
+                    <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
 
+                    <Line type="monotone" dataKey="magnitudesX" stroke="#8884d8" name="Magnitude (X)" />
+                </LineChart>
+                <h2>Pixel Spectrum (Y)</h2>
+                <LineChart width={200} height={400} data={psY}
+                    margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                    <XAxis type="number" dataKey="frequenciesY" 
+                        label={{value: "Y Frequency", position: "insideBottom"}} />
+                    <YAxis label={{value: "Y Magnitude", position: "insideLeft", angle: -90}} />
+
+                    <Tooltip />
+                    <Legend verticalAlign="top" height={36} />
+                    <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
+
+                    <Line type="monotone" dataKey="magnitudesY" stroke="#EB6666" name="Magnitude (Y)" />
+                </LineChart>
+            </ResponsiveContainer>
+
+        </div>
+    );
+}
+
+function PowerSpectrum() {
+
+}
+
+function Graphs() {    
 
 
     return (
-        <div id="graphs" className="container flex row">
-            {/* <LineChart width={500} height={300} data={data}>
-                <XAxis dataKey="name"/>
-                <YAxis/>
-                <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-                <Line type="monotone" dataKey="pv" stroke="#82ca9d" />
-            </LineChart> */}
-
-            {/* <LineChart width={500} height={300} data={ps} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="x" label={{ value: 'X Coordinate', position: 'insideBottom', offset: -10 }} />
-                <YAxis label={{ value: 'Y Coordinate', angle: -90, position: 'insideLeft', offset: -10 }} />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="y" stroke="#8884d8" activeDot={{ r: 8 }} />
-            </LineChart> */}
-
-            <LineChart width={1000} height={400} data={ps}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <XAxis type="category" dataKey="magnitudesX" />
-
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
-
-                <Line type="monotone" dataKey="frequenciesX" stroke="#8884d8" />
-            </LineChart>
-        </div>
+        <>
+            <PixelSpectrum />
+        </>
     );
 }
 
