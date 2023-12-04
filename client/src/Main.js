@@ -420,10 +420,10 @@ function Video() {
             })
             .then((data) => {
                 console.log(data)
-                let data = convertToSingleElementDictionaries(data);
+                data = convertToSingleElementDictionaries(data);
                 data = JSON.stringify(data);
-                window.dispatchEvent(new Event('storage'))
                 localStorage.setItem("PoS", data)
+                window.dispatchEvent(new Event('storage'))
                 // setPoS(PoS1);
 
             })
@@ -580,10 +580,10 @@ function PixelSpectrum() {
         <ResponsiveContainer width="90%" height="70%">
             <h2>Pixel Spectrum (X)</h2>
             <LineChart width={200} height={400} data={psX}
-                margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                margin={{ top: 5, right: 5, left: 30, bottom: 5 }}>
                 <XAxis type="number" dataKey="frequenciesX"
-                    label={{value: "X Frequency", position: "insideBottom"}} />
-                <YAxis label={{value: "X Magnitude", position: "insideLeft", angle: -90}} />
+                    label={{value: "X Frequency", position: "insideBottom", offset: -1}} />
+                <YAxis label={{value: "X Magnitude", position: "insideLeft", angle: -90, offset: 10}} />
                 <Tooltip />
                 <Legend verticalAlign="top" height={36}  />
                 <CartesianGrid stroke="black" strokeDasharray="5 5"/>
@@ -592,10 +592,10 @@ function PixelSpectrum() {
             </LineChart>
             <h2>Pixel Spectrum (Y)</h2>
             <LineChart width={200} height={400} data={psY}
-                margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                margin={{ top: 5, right: 5, left: 30, bottom: 5 }}>
                 <XAxis type="number" dataKey="frequenciesY" 
-                    label={{value: "Y Frequency", position: "insideBottom"}} />
-                <YAxis label={{value: "Y Magnitude", position: "insideLeft", angle: -90}} />
+                    label={{value: "Y Frequency", position: "insideBottom", offset: -1}} />
+                <YAxis label={{value: "Y Magnitude", position: "insideLeft", angle: -90, offset: 10}} />
 
                 <Tooltip />
                 <Legend verticalAlign="top" height={36} />
@@ -616,6 +616,7 @@ function PowerSpectrum() {
 
             let pos1 = localStorage.getItem("PoS");
             let pos2 = JSON.parse(pos1)
+            // console.log("powre spectrum", pos2)
             setPoS(pos2)
                 
         }
@@ -626,32 +627,32 @@ function PowerSpectrum() {
 
     return (
         <>
-            <ResponsiveContainer width="90%" height="10%">
+            <ResponsiveContainer width="90%" height="70%">
                 <h2>Power Spectrum (X)</h2>
-                <LineChart width={200} height={400} data={PoS}
-                    margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                <LineChart width={400} height={400} data={PoS}
+                    margin={{ top: 5, right: 5, left: 30, bottom: 5 }}>
                     <XAxis type="number" dataKey="fft_frequenciesX" 
-                        label={{value: "Y FFT Frequency", position: "insideBottom"}} />
-                    <YAxis label={{value: "Y FFT Magnitude", position: "insideLeft", angle: -90}} />
+                        label={{value: "X FFT Frequency", position: "insideBottom", offset: -1}} />
+                    <YAxis label={{value: "X FFT Magnitude", position: "insideLeft", angle: -90, offset: 10}} />
 
                     <Tooltip />
                     <Legend verticalAlign="top" height={36} />
                     <CartesianGrid stroke="black" strokeDasharray="5 5"/>
 
-                    <Line type="monotone" dataKey="fft_magnitudesX" stroke="#EB6666" name="Magnitude (Y)" />
+                    <Line type="monotone" dataKey="mean_magnitudesX" stroke="#8884d8" name="FFT Magnitude (X)" />
                 </LineChart>
                 <h2>Power Spectrum (Y)</h2>
                 <LineChart width={200} height={400} data={PoS}
-                    margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                    margin={{ top: 5, right: 5, left: 30, bottom: 5 }}>
                     <XAxis type="number" dataKey="fft_frequenciesY" 
-                        label={{value: "Y FFT Frequency", position: "insideBottom"}} />
-                    <YAxis label={{value: "Y FFT Magnitude", position: "insideLeft", angle: -90}} />
+                        label={{value: "Y FFT Frequency", position: "insideBottom", offset: -1}} />
+                    <YAxis label={{value: "Y FFT Magnitude", position: "insideLeft", angle: -90, offset: 10}} />
 
                     <Tooltip />
                     <Legend verticalAlign="top" height={36} />
                     <CartesianGrid stroke="black" strokeDasharray="5 5"/>
 
-                    <Line type="monotone" dataKey="fft_magnitudesY" stroke="#EB6666" name="FFT Magnitude (Y)" />
+                    <Line type="monotone" dataKey="mean_magnitudesY" stroke="#EB6666" name="FFT Magnitude (Y)" />
                 </LineChart>
             </ResponsiveContainer>
         </>
@@ -674,11 +675,28 @@ function Graphs() {
 }
 
 function Settings() {
+    const setting_options = [["Amplification", " "]]
     
     return (
-        <div className="container flex settings">
+        <div className="settings container containerShadow flex col">
+            <div className="settings_title flex">
+                Settings
+            </div>
 
-            TODO: Settings Box
+            <div className="settings_wrapper flex row">
+                {
+
+                }
+                {/* <div className="settings_column_wrapper flex col">
+                    <div className="setting_item">
+                        
+                    </div>
+                    <div className="setting_item">
+
+                    </div>
+                </div> */}
+            </div>
+
         </div>
     )
 }
