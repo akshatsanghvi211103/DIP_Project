@@ -4,6 +4,8 @@
     --circle_blur_offset_w: -10vw;
     --circle_blur_offset_h: -10vh;
 
+    --first_section_h: 90vh;
+
     --backgroundColor: #6d6875;
     --leftSize: 50%;
     --headerSize: 50px;
@@ -41,6 +43,7 @@ body {
     width: 100vw;
     /* filter: url(#noiseFilter); */
     overflow-y: scroll;
+    overflow-x: hidden;
 
 }
 
@@ -54,6 +57,14 @@ body {
     align-items: center;
 }
 
+.col {
+    flex-direction: column;
+}
+
+.row {
+    flex-direction: row;
+}
+
 #header {
     width: 100%;
     height: var(--headerSize);
@@ -64,11 +75,19 @@ body {
 }
 
 #pageWrapper {
-    flex-direction: row;
+    /* padding: 30px; */
+    height: calc(100% - var(--globalPadding) - var(--headerSize));
+    width: 100%;
+}
+
+#videosWrapper {
 
     /* height: 100%; */
-    height: calc(100vh - var(--globalPadding) - var(--headerSize));
+    height: calc(var(--first_section_h) - var(--globalPadding) - var(--headerSize));
+    width: 100%;
 }
+
+
 
 .sideWrapper {
     flex-direction: column;
@@ -103,8 +122,8 @@ body {
 }
 
 .settings {
-    height: 60vh;
-    width: 35vw;
+    height: 20vh;
+    width: 80vw;
 }
 
 .video {
@@ -126,7 +145,7 @@ body {
 }
 
 .verticalDivider {
-    height: 95%;
+    height: 80%;
     margin-top: -5vh;
     width: 1px;
     background-color: var(--secondary);
@@ -202,12 +221,12 @@ body {
 
 .blobs {
     z-index: -2;
-        height: 100vh;
-        width: 100vw;
-        position: absolute;
+    height: 120vh;
+    width: 100vw;
+    position: absolute;
 
     top: 0px;
-        left: 0px;
+    left: 0px;
 
 }
 

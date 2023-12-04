@@ -21,9 +21,14 @@ function Main() {
         <>
 
             <Header />
-            <UsingVideo />
-            <img className="noise"></img>
-            <Blobs />
+            <div id="pageWrapper" className="flex col">
+                <UsingVideo />
+                <img className="noise"></img>
+                <img className="noise noise2"></img>
+                <Blobs />
+                <Settings />
+
+            </div>
             {/* <MousePos /> */}
             {/* <div className="screen"></div>
             <div className="screen"></div> */}
@@ -43,6 +48,7 @@ function Header() {
 function Blobs() {
     return (
         <div className="blobs flex">
+
             <div className="blob circle1"></div>
             <div className="blob circle2"></div>
             <div className="blob circle3"></div>
@@ -55,23 +61,13 @@ function UsingVideo() {
     const [active, setActive] = useState(0)
 
     return (
-        <div id="pageWrapper" className="flex">
-            <div id="leftSideWrapper" className="sideWrapper flex">
-                <Video />
-            </div>
-
-            <div className="verticalDivider"></div>
-
-            <div id="rightSideWrapper" className="sideWrapper flex">
-                <div className="container containerShadow flex" style={{marginLeft: "-50px"}}>
-                    {(active == 0) && <Settings />}
-                    {(active == 1) && <FFT />}
-                    {(active == 2) && <PS />}
-                </div>
-            </div>
+        <div id="videosWrapper" className="flex row">
+            <Video />
 
 
-            <div id="tabs">
+
+            {
+            /* <div id="tabs">
                 <div className={`tab flex ${(active == 0) ? "activeTab" : ""}`}
                     onClick={() => setActive(0)}
                     >
@@ -87,7 +83,8 @@ function UsingVideo() {
                     >
                     {(active == 2) ? "Power" : "PS"}
                 </div>
-            </div>
+            </div> */
+            }
 
         </div>
     )
@@ -319,31 +316,45 @@ function Video() {
     
 
     return (
-        <div className="container containerShadow">
-            <video
-                ref={videoRef}
-                controls
-                src={bobble}
-                style={{
-                    position: "absolute",
-                    borderRadius: "5px",
-                    opacity: targetOpacity,
-                    ...size,
-                    pointerEvents: pointerEvents
-                }}
-            />
-            <div>
-                <canvas
-                    ref={canvasRef}
-                    {...size}
-                    onMouseDown={mouseDown}
-                    onMouseUp={mouseUp}
-                    onMouseMove={mouseMove}
-                    style={{ borderRadius: "5px" }}
-                />
+        <>
+            <div id="leftSideWrapper" className="sideWrapper flex col">
+                <input type="file"></input>
+                <div className="container containerShadow">
+                    <video
+                        ref={videoRef}
+                        controls
+                        src={bobble}
+                        style={{
+                            position: "absolute",
+                            borderRadius: "5px",
+                            opacity: targetOpacity,
+                            ...size,
+                            pointerEvents: pointerEvents
+                        }}
+                    />
+                    <div>
+                        <canvas
+                            ref={canvasRef}
+                            {...size}
+                            onMouseDown={mouseDown}
+                            onMouseUp={mouseUp}
+                            onMouseMove={mouseMove}
+                            style={{ borderRadius: "5px" }}
+                        />
+                    </div>
+                </div>
+                <div id="video_buttons" className="flex row">
+                    {button}
+                </div>
             </div>
-            {button}
-        </div>
+            <div className="verticalDivider"></div>
+
+            <div id="rightSideWrapper" className="sideWrapper flex col">
+                <div className="container containerShadow flex" style={{...size}}>
+
+                </div>
+            </div>
+        </>
     )
 }
 
