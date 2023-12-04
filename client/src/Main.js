@@ -21,6 +21,7 @@ function Main() {
         <>
 
             <Header />
+            <div className="pageWrapperBackground"></div>
             <div id="pageWrapper" className="flex col">
                 <UsingVideo />
                 <img className="noise"></img>
@@ -305,6 +306,9 @@ function Video() {
                 height = maxHeight - 50; 
                 width = height / aspectRatio;
             }
+
+            width = Math.round(width)
+            height = Math.round(height)
             // console.log("width, height: ")
             // console.log(width)
             // console.log(height)
@@ -318,15 +322,17 @@ function Video() {
     return (
         <>
             <div id="leftSideWrapper" className="sideWrapper flex col">
-                <input type="file"></input>
-                <div className="container containerShadow">
+                <div className="video_buttons flex row video_buttons1">
+                    <input type="file"></input>
+                </div>
+                <div className="container containerShadow" style={{...size}}>
                     <video
                         ref={videoRef}
                         controls
                         src={bobble}
                         style={{
                             position: "absolute",
-                            borderRadius: "5px",
+                            // borderRadius: "5px",
                             opacity: targetOpacity,
                             ...size,
                             pointerEvents: pointerEvents
@@ -339,11 +345,11 @@ function Video() {
                             onMouseDown={mouseDown}
                             onMouseUp={mouseUp}
                             onMouseMove={mouseMove}
-                            style={{ borderRadius: "5px" }}
+                            // style={{ borderRadius: "5px" }}
                         />
                     </div>
                 </div>
-                <div id="video_buttons" className="flex row">
+                <div className="video_buttons flex row video_buttons2">
                     {button}
                 </div>
             </div>
