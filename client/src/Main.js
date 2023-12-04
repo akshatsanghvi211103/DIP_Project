@@ -407,7 +407,7 @@ function Video() {
     }
 
     const getPowerSpectrum = async () => {
-        const response = await fetch("/pixelSpectrum", {
+        const response = await fetch("/powerSpectrum", {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -420,9 +420,11 @@ function Video() {
             })
             .then((data) => {
                 console.log(data)
+                let data = convertToSingleElementDictionaries(data);
                 data = JSON.stringify(data);
-                localStorage.setItem("PoS", data)
                 window.dispatchEvent(new Event('storage'))
+                localStorage.setItem("PoS", data)
+                // setPoS(PoS1);
 
             })
             .catch((error) => {
@@ -466,8 +468,6 @@ function Video() {
         }
 
         getPowerSpectrum();
-
-
 
     }, [])
 
@@ -525,62 +525,47 @@ function Video() {
     )
 }
 
+function convertToSingleElementDictionaries(dictionaryOfLists) {
+    // Get the keys of the original dictionary
+    const keys = Object.keys(dictionaryOfLists);
+
+    // Check if there are no keys or if any of the lists is empty
+    if (keys.length === 0 || keys.some(key => dictionaryOfLists[key].length === 0)) {
+        return [];
+    }
+
+    // Find the maximum length among the lists
+    const maxLength = Math.max(...keys.map(key => dictionaryOfLists[key].length));
+
+    // Create a list of dictionaries
+    const listOfDictionaries = [];
+    for (let i = 0; i < maxLength; i++) {
+        const newDict = {};
+        keys.forEach(key => {
+        // Use the element if it exists, otherwise use null or some default value
+        newDict[key] = i < dictionaryOfLists[key].length ? dictionaryOfLists[key][i] : null;
+        });
+        listOfDictionaries.push(newDict);
+    }
+
+    return listOfDictionaries;
+}
+
 function PixelSpectrum() {
     const [psX, setPSX] = useState([]);
     const [psY, setPSY] = useState([]);
 
-    function convertToSingleElementDictionaries(dictionaryOfLists) {
-        // Get the keys of the original dictionary
-        const keys = Object.keys(dictionaryOfLists);
 
-        // Check if there are no keys or if any of the lists is empty
-        if (keys.length === 0 || keys.some(key => dictionaryOfLists[key].length === 0)) {
-            return [];
-        }
-
-        // Find the maximum length among the lists
-        const maxLength = Math.max(...keys.map(key => dictionaryOfLists[key].length));
-
-        // Create a list of dictionaries
-        const listOfDictionaries = [];
-        for (let i = 0; i < maxLength; i++) {
-            const newDict = {};
-            keys.forEach(key => {
-            // Use the element if it exists, otherwise use null or some default value
-            newDict[key] = i < dictionaryOfLists[key].length ? dictionaryOfLists[key][i] : null;
-            });
-            listOfDictionaries.push(newDict);
-        }
-
-        return listOfDictionaries;
-    }
 
     useEffect(() => {
         const handleStorage = () => {
-            // let frequenciesX = localStorage.getItem("fX")
-            // let frequenciesY = localStorage.getItem("fY")
-            // let magnitudesX = localStorage.getItem("mX")
-            // let magnitudesY = localStorage.getItem("mY")
-
-            // setfX(frequenciesX);
-            // setfY(frequenciesY);
-            // setmX(magnitudesX);
-            // setmY(magnitudesY);
 
             let ps1 = localStorage.getItem("PS");
             let psX1 = JSON.parse(ps1)
             let psY1 = JSON.parse(ps1)
-            console.log("psx1", psX1)
+            // console.log("psx1", psX1)
             let psX2 = convertToSingleElementDictionaries(psX1);
             let psY2 = convertToSingleElementDictionaries(psY1);
-
-            console.log("psX1", ps1, psX1)
-            // psX2.sort((a, b) => a["magnitudesX"] - b["magnitudesX"])
-            // psY2.sort((a, b) => a["magnitudesY"] - b["magnitudesY"])
-
-            // Output: List of dictionaries
-
-            console.log("psX2", psX2)
 
             setPSX(psX2)
             setPSY(psY2)
@@ -592,50 +577,99 @@ function PixelSpectrum() {
     }, [])
 
     return (
-        <div id="graphs" className="container flex row">
-            <ResponsiveContainer width="90%" height="70%">
-                <h2>Pixel Spectrum (X)</h2>
-                <LineChart width={200} height={400} data={psX}
-                    margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-                    <XAxis type="number" dataKey="frequenciesX"
-                        label={{value: "X Frequency", position: "insideBottom"}} />
-                    <YAxis label={{value: "X Magnitude", position: "insideLeft", angle: -90}} />
-                    <Tooltip />
-                    <Legend verticalAlign="top" height={36}  />
-                    <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
+        <ResponsiveContainer width="90%" height="70%">
+            <h2>Pixel Spectrum (X)</h2>
+            <LineChart width={200} height={400} data={psX}
+                margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                <XAxis type="number" dataKey="frequenciesX"
+                    label={{value: "X Frequency", position: "insideBottom"}} />
+                <YAxis label={{value: "X Magnitude", position: "insideLeft", angle: -90}} />
+                <Tooltip />
+                <Legend verticalAlign="top" height={36}  />
+                <CartesianGrid stroke="black" strokeDasharray="5 5"/>
 
-                    <Line type="monotone" dataKey="magnitudesX" stroke="#8884d8" name="Magnitude (X)" />
-                </LineChart>
-                <h2>Pixel Spectrum (Y)</h2>
-                <LineChart width={200} height={400} data={psY}
-                    margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-                    <XAxis type="number" dataKey="frequenciesY" 
-                        label={{value: "Y Frequency", position: "insideBottom"}} />
-                    <YAxis label={{value: "Y Magnitude", position: "insideLeft", angle: -90}} />
+                <Line type="monotone" dataKey="magnitudesX" stroke="#8884d8" name="Magnitude (X)" />
+            </LineChart>
+            <h2>Pixel Spectrum (Y)</h2>
+            <LineChart width={200} height={400} data={psY}
+                margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                <XAxis type="number" dataKey="frequenciesY" 
+                    label={{value: "Y Frequency", position: "insideBottom"}} />
+                <YAxis label={{value: "Y Magnitude", position: "insideLeft", angle: -90}} />
 
-                    <Tooltip />
-                    <Legend verticalAlign="top" height={36} />
-                    <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
+                <Tooltip />
+                <Legend verticalAlign="top" height={36} />
+                <CartesianGrid stroke="black" strokeDasharray="5 5"/>
 
-                    <Line type="monotone" dataKey="magnitudesY" stroke="#EB6666" name="Magnitude (Y)" />
-                </LineChart>
-            </ResponsiveContainer>
+                <Line type="monotone" dataKey="magnitudesY" stroke="#EB6666" name="Magnitude (Y)" />
+            </LineChart>
+        </ResponsiveContainer>
 
-        </div>
     );
 }
 
 function PowerSpectrum() {
+    const [PoS, setPoS] = useState([])
 
+    useEffect(() => {
+        const handleStorage = () => {
+
+            let pos1 = localStorage.getItem("PoS");
+            let pos2 = JSON.parse(pos1)
+            setPoS(pos2)
+                
+        }
+        
+        window.addEventListener('storage', handleStorage())
+        return () => window.removeEventListener('storage', handleStorage())
+    }, [])
+
+    return (
+        <>
+            <ResponsiveContainer width="90%" height="10%">
+                <h2>Power Spectrum (X)</h2>
+                <LineChart width={200} height={400} data={PoS}
+                    margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                    <XAxis type="number" dataKey="fft_frequenciesX" 
+                        label={{value: "Y FFT Frequency", position: "insideBottom"}} />
+                    <YAxis label={{value: "Y FFT Magnitude", position: "insideLeft", angle: -90}} />
+
+                    <Tooltip />
+                    <Legend verticalAlign="top" height={36} />
+                    <CartesianGrid stroke="black" strokeDasharray="5 5"/>
+
+                    <Line type="monotone" dataKey="fft_magnitudesX" stroke="#EB6666" name="Magnitude (Y)" />
+                </LineChart>
+                <h2>Power Spectrum (Y)</h2>
+                <LineChart width={200} height={400} data={PoS}
+                    margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                    <XAxis type="number" dataKey="fft_frequenciesY" 
+                        label={{value: "Y FFT Frequency", position: "insideBottom"}} />
+                    <YAxis label={{value: "Y FFT Magnitude", position: "insideLeft", angle: -90}} />
+
+                    <Tooltip />
+                    <Legend verticalAlign="top" height={36} />
+                    <CartesianGrid stroke="black" strokeDasharray="5 5"/>
+
+                    <Line type="monotone" dataKey="fft_magnitudesY" stroke="#EB6666" name="FFT Magnitude (Y)" />
+                </LineChart>
+            </ResponsiveContainer>
+        </>
+    );
 }
 
 function Graphs() {    
 
 
     return (
-        <>
-            <PixelSpectrum />
-        </>
+        <div id="graphs" className="flex col">
+            <div className="graph">
+                <PixelSpectrum />
+            </div>
+            <div className="graph">
+                <PowerSpectrum />
+            </div>
+        </div>
     );
 }
 

@@ -4,7 +4,7 @@
     --circle_blur_offset_w: -10vw;
     --circle_blur_offset_h: -10vh;
 
-    --first_section_h: 70vh;
+    --first_section_h: 60vh;
     --page_margin: 50px;
     --page_size: 300vh;
 
@@ -92,7 +92,7 @@ body {
     height: var(--page_size);
     width: calc(100% - 2 * var(--page_margin));
     background-color: white;
-    opacity: 50%;
+    /* opacity: 50%; */
     z-index: -1;
 
     border-radius: 10px;
@@ -116,6 +116,7 @@ body {
 
 #leftSideWrapper {
     width: var(--leftSize);
+    margin-top: 50px;
 }
 
 #rightSideWrapper {
@@ -179,7 +180,7 @@ body {
 
 .verticalDivider {
     height: 80%;
-    margin-top: -5vh;
+    margin-top: 0vh;
     width: 1px;
     background-color: var(--secondary);
 }
@@ -423,5 +424,12 @@ input[type=file]::file-selector-button:hover {
 
 #graphs {
     width: 100%;
-    height: 80vh;
+    height: 100vh;
+}
+
+.graph {
+    height: 50%;
+    width: 100%;
+
+    margin-bottom: 400px;
 }
