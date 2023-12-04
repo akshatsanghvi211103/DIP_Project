@@ -157,7 +157,7 @@ body {
 
 .settings {
     height: 20vh;
-    width: 87vw;
+    width: 80vw;
 }
 
 .settings_title {
@@ -170,16 +170,35 @@ body {
     height: 80%;
     width: 100%;
     padding: 30px;
+
+    gap: 300px;
 }
 
 .settings_column_wrapper {
     height: 100%;
     width: 150px;
+    gap: 70px;
 }
 
 .setting_item {
     height: 50%;
     width: 100%;
+}
+
+.setting_item_title {
+    height: 10px;
+    width: 100%;
+
+    text-align: right;
+    margin-left: -150px;
+}
+
+.setting_item_content {
+    margin-left: 50px;
+    margin-top: -20px;
+
+    height: 20px;
+    width: 150px;
 }
 
 .video {

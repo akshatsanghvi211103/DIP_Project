@@ -14,6 +14,8 @@ import bobble from "./assets/bobble.mp4"
 import bobbleBIG from "./assets/bobbleBIG.mp4"
 
 import { LineChart, CartesianGrid, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer} from "recharts";
+import Slider from '@mui/material/Slider';
+
 
 
 
@@ -260,6 +262,8 @@ function Video() {
 
     const confirmArrow = (e) => {
         console.log("Arrow Confirmed")
+
+        processArrow();
     }
 
 
@@ -328,49 +332,50 @@ function Video() {
         }
     }
 
-    // const processArrow = async (
-    //         pixel = [85, 155], freqXIndex = 34, freqYIndex = 34,
-    //         force = [0.5, 0.5], amp = 3, time = 160, mass = 1,
-    //         damp = 0.095, width = 415, sample = 1
-    //     ) => {
+    const processArrow = async (
+            pixel = [85, 155], freqXIndex = 34, freqYIndex = 34,
+            force = [0.5, 0.5]
+    ) => {
+        
+        let hyperparameters = JSON.parse(localStorage.getItem("hyp"))
 
-    //     const data = {
+        const data = {
 
-    //         "pixel": pixel,
-    //         "frequencyXIndex": freqXIndex,
-    //         "frequencyYIndex": freqYIndex,
-    //         "force": force,
-    //         "hyperparameters": {
-    //                 "amplification" : amp, 
-    //                 "time" : time, 
-    //                 "mass" : mass, 
-    //                 "damp" : damp, 
-    //                 "width": width, 
-    //                 "sample": sample
-    //             }
+            "pixel": pixel,
+            "frequencyXIndex": freqXIndex,
+            "frequencyYIndex": freqYIndex,
+            "force": force,
+            hyperparameters
             
-    //     }
+        }
 
-    //     console.log(JSON.stringify(data))
+        console.log(JSON.stringify(data))
 
 
-    //     const response = await fetch("/processArrow", {
-    //         method: "POST",
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Access-Control-Allow-Origin': '*'
-    //         },
-    //         body: JSON.stringify(data)
-    //     })
+        const response = await fetch("/processArrow", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify(data)
+        })
+            .then((response) => {
+                if (!response.ok) throw new Error(response.status)
+                else return response.json()
+            })
+            .then((data) => {
+                console.log(String(data))
+                // data = String(JSON.stringify(data));
+                // localStorage.setItem("OVid", data)
+                // window.dispatchEvent(new Event('storage'))
 
-    //     if (response.ok) {
-    //         console.log("Got Response")
-    //         return 1;
-    //     } else {
-    //         console.log("Did Not get Response")
-    //         return 0;
-    //     }
-    // }
+            })
+            .catch((error) => {
+                console.log("Error: " + error);
+
+            })
+    }
 
     const getPixelSpectrum = async (pixel) => {
         // let video_file_name = "bobble_small.mp4"
@@ -675,7 +680,75 @@ function Graphs() {
 }
 
 function Settings() {
-    const setting_options = [["Amplification", " "]]
+
+    // "hyperparameters": {
+    //     "amplification" : 3,
+    //     "time" : 160,
+    //     "mass" : 1,
+    //     "damp" : 0.095,
+    //     "width": 415,
+    //     "sample" : 1
+    // }
+    
+    const [amp, setAmp] = useState(3);
+    const [mass, setMass] = useState(1);
+    const [damp, setDamp] = useState(0.095);
+    const [sample, setSample] = useState(1);
+
+
+    const setting_options = [
+        [{ name: "Amplification", min: 0, max: 10, default: 3 },
+            {name: "Mass", min: 0, max: 5, default: 1}],
+        [{ name: "Damp", min: 0, max: 1, default: 0.095 },
+            {name: "Sample", min: 0, max: 3, default: 1}],
+    ]
+
+    const step_size = 10;
+
+    useEffect(() => {
+        let hyperparameters = JSON.stringify({
+                "amplification" : amp,
+                    "time" : 160,
+                        "mass" : mass,
+                            "damp" : damp,
+                                "width": 415,
+                                    "sample" : sample
+            })
+        
+
+        localStorage.setItem("hyperparameters", hyperparameters)
+    }, [])
+
+    useEffect(() => {
+        let hyperparameters = JSON.stringify({
+                "amplification" : amp,
+                    "time" : 160,
+                        "mass" : mass,
+                            "damp" : damp,
+                                "width": 415,
+                                    "sample" : sample
+            })
+        
+        console.log(hyperparameters)
+        localStorage.setItem("hyperparameters", hyperparameters)
+    }, [amp, mass, damp, sample])
+
+    const handleChange = (event, newValue, hyp) => {
+        // console.log(event, newValue, hyp)
+        // console.log(amp, mass, damp, sample)
+        if (hyp === "Amplification") {
+            setAmp(newValue)
+        } else if (hyp === "Mass") {
+            setMass(newValue)
+        } else if (hyp === "Damp") {
+            setDamp(newValue)
+        } else if (hyp === "Sample") {
+            setSample(newValue)
+        } else {
+            console.log("I did something wrong ig")
+        }
+        // console.log(amp, mass, damp, sample)
+    }
     
     return (
         <div className="settings container containerShadow flex col">
@@ -685,7 +758,34 @@ function Settings() {
 
             <div className="settings_wrapper flex row">
                 {
+                    setting_options.map((item1, index1) => {
+                        return (<div className="settings_column_wrapper flex col" key={index1}>
+                            {item1.map((item2, index2) => {
+                                return (<div className="setting_item" key={index1 * 2 + index2}>
+                                    <div className="setting_item_title">
+                                        {item2.name}
+                                    </div>
+                                    <div className="setting_item_content">
+                                        <Slider
+                                            min={item2.min}
+                                            max={item2.max}
+                                            defaultValue={item2.default}
+                                            step={(item2.max - item2.min) / step_size}
 
+                                            marks={
+                                                [{ value: item2.min, label: String(item2.min) }, { value: item2.default, label: String(item2.default) }, { value: item2.max, label: String(item2.max) }]}
+                                            // aria-labelledby="discrete-slider"
+                                            valueLabelDisplay="on"
+                                            color="secondary"
+                                            onChange={(e, v) => { handleChange(e, v, item2.name)}}
+
+                                            // size="small"
+                                        />
+                                    </div>
+                                </div>)
+                            })}
+                        </div>)
+                    })
                 }
                 {/* <div className="settings_column_wrapper flex col">
                     <div className="setting_item">

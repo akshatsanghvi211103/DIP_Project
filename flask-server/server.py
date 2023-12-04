@@ -174,18 +174,21 @@ def process():
     
     
     output_frames = renderOutputVideo(frame, final_displacement)
-    output_video_path = "./temp/output_video.avi"
+    output_video_path = os.path.abspath(os.path.join("./temp/", "output_video.avi"))
     saveFramesToVideo(output_frames, output_video_path)
     print(output_frames.shape)
     print("COMPLETED OUTPUT FRAMES")
     
+    print(output_video_path)
+    return str(output_video_path)
     
-
     
-    return {"status": "okay"}
+    # return {"status": "okay"}
         
-        
-    
+@app.post("/setConfig")
+def setConfig():     
+    data = request.get_json()
+    hyperparameters = data["hyperparameters"]
     
     
     
