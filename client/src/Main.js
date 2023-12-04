@@ -23,7 +23,6 @@ function Main() {
             <Header />
             <UsingVideo />
             <img className="noise"></img>
-            <img className="noise noise2"></img>
             <Blobs />
             {/* <MousePos /> */}
             {/* <div className="screen"></div>
@@ -48,7 +47,6 @@ function Blobs() {
             <div className="blob circle2"></div>
             <div className="blob circle3"></div>
             <div className="blob circle4"></div>
-            <div className="blob circle5"></div>
         </div>
     )
 }

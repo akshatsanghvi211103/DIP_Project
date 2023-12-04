@@ -202,20 +202,49 @@ body {
 
 .blobs {
     z-index: -2;
-    height: 100vh;
-    width: 100vw;
-    position: absolute;
+        height: 100vh;
+        width: 100vw;
+        position: absolute;
 
     top: 0px;
-    left: 0px;
+        left: 0px;
 
 }
 
 .blob {
     border-radius: 100%;
     z-index: -2;
-    position: absolute;
+}
 
+.circle1 {
+    background-color: var(--r1);
+    position: absolute;
+    top: var(--circle_blur_offset_h);
+    left: var(--circle_blur_offset_w);
+    height: 80vh;
+    width: 80vw;
+    /* filter: blur(120px); */
+    filter: blur(var(--blur_constant));
+    /* animation: circle1Animation 8s infinite ease; */
+}
+
+.circle2 {
+    background-color: var(--r2);
+    position: absolute;
+    bottom: var(--circle_blur_offset_h);
+    right: var(--circle_blur_offset_w);
+    height: 80vh;
+    width: 80vw;
+    filter: blur(var(--blur_constant));
+    /* backdrop-filter: blur(10px); */
+    /* animation: circle2Animation 8s infinite ease; */
+    }
+
+.circle3 {
+    background-color: var(--red);
+    position: absolute;
+    bottom: var(--circle_blur_offset_h);
+    left: var(--circle_blur_offset_w);
     height: 80vh;
     width: 80vw;
     filter: blur(var(--blur_constant));
@@ -223,31 +252,18 @@ body {
     /* animation: circle2Animation 8s infinite ease; */
 }
 
-.circle1 {
-    background-color: var(--r1);
-    bottom: var(--circle_blur_offset_h);
-    left: var(--circle_blur_offset_w);
-}
-
-.circle2 {
-    background-color: var(--r2);
-    top: var(--circle_blur_offset_h);
-    left: var(--circle_blur_offset_w);
-}
-
-.circle3 {
-    background-color: var(--red);
-    bottom: var(--circle_blur_offset_h);
-    right: var(--circle_blur_offset_w);
-}
-
 .circle4 {
     background-color: var(--green);
+    position: absolute;
     top: var(--circle_blur_offset_h);
     right: var(--circle_blur_offset_w);
-
+    height: 80vh;
+    width: 80vw;
+    filter: blur(var(--blur_constant));
+    /* backdrop-filter: blur(10px); */
+    /* animation: circle2Animation 8s infinite ease; */
 }
-
+    
 @keyframes circle1Animation {
     0% {
         top: 200px;
@@ -267,37 +283,37 @@ body {
         transform: scale(1.3);
     }
 
-    100% {
-        top: 200px;
-        left: 100px;
-        transform: scale(1);
-    }
+                                100% {
+                                    top: 200px;
+                                    left: 100px;
+                                    transform: scale(1);
+                                }
 }
 
 @keyframes circle2Animation {
     0% {
-        top: 80px;
-        right: -20px;
-        transform: scale(1.2);
-    }
-
-    30% {
-        top: 300px;
-        right: -20px;
-        transform: scale(1);
-    }
-
-    60% {
-        top: 200px;
-        right: 100px;
-        transform: scale(1);
-    }
-
-    100% {
-        top: 80px;
-        right: -20px;
-        transform: scale(1.2);
-    }
+            top: 80px;
+            right: -20px;
+            transform: scale(1.2);
+        }
+    
+        30% {
+            top: 300px;
+            right: -20px;
+            transform: scale(1);
+        }
+    
+        60% {
+            top: 200px;
+            right: 100px;
+            transform: scale(1);
+        }
+    
+        100% {
+            top: 80px;
+            right: -20px;
+            transform: scale(1.2);
+        }
 }
 
 #fastCursor {
