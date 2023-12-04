@@ -13,6 +13,9 @@ import noise from "./assets/nnnoise.svg"
 import bobble from "./assets/bobble.mp4"
 import bobbleBIG from "./assets/bobbleBIG.mp4"
 
+import { LineChart, CartesianGrid, Line, XAxis, YAxis, Tooltip, Legend} from "recharts";
+
+
 
 function Main() {
 
@@ -37,36 +40,6 @@ function Main() {
             <div className="screen"></div> */}
         </>
     )
-}
-
-function Graphs() {
-    const [fX, setfX] = useState([]);
-    const [fY, setfY] = useState([]);
-    const [mX, setmX] = useState([]);
-    const [mY, setmY] = useState([]);
-
-    useEffect(() => {
-        const handleStorage = () => {
-            let frequenciesX = localStorage.getItem("fX")
-            let frequenciesY = localStorage.getItem("fY")
-            let magnitudesX = localStorage.getItem("mX")
-            let magnitudesY = localStorage.getItem("mY")
-
-            setfX(frequenciesX);
-            setfY(frequenciesY);
-            setmX(magnitudesX);
-            setmY(magnitudesY);
-        }
-
-        window.addEventListener('storage', handleStorage())
-        return () => window.removeEventListener('storage', handleStorage())
-    }, [])
-
-    return (
-        <>
-            
-        </>
-    );
 }
 
 function Header() {
@@ -208,19 +181,8 @@ function Video() {
         setPoint1({x, y})
         setMouseState(1)
 
-        let response1 = await getPixelSpectrum([x, y])
-        let frequenciesX = response1["frequenciesX"];
-        let frequenciesY = response1["frequenciesY"];
-        let magnitudesX = response1["magnitudesX"];
-        let magnitudesY = response1["magnitudesY"];
-
-        localStorage.setItem("fX", frequenciesX)
-        localStorage.setItem("fY", frequenciesY)
-        localStorage.setItem("mX", frequenciesX)
-        localStorage.setItem("mY", frequenciesY)
-
-        console.log(response1)
-
+        // console.log(response1)
+        getPixelSpectrum([x, y]);
     }
 
     const mouseUp = (e) => {
@@ -427,14 +389,21 @@ function Video() {
             },
             body: JSON.stringify(data)
         })
+            .then((response) => {
+                if (!response.ok) throw new Error(response.status)
+                else return response.json()
+            })
+            .then((data) => {
+                console.log(data)
+                data = JSON.stringify(data);
+                localStorage.setItem("PS", data)
+                window.dispatchEvent(new Event('storage'))
 
-        if (response.ok) {
-            console.log("Got Pixel Spectrum Response")
-            return response
-        } else {
-            console.log("Did Not get Response")
-            return null;
-        }
+            })
+            .catch((error) => {
+                console.log("Error: " + error);
+
+            })
     }
 
     useEffect(() => {
@@ -483,8 +452,6 @@ function Video() {
 
     }
 
-    
-
     return (
         <>
             <div id="leftSideWrapper" className="sideWrapper flex col">
@@ -528,6 +495,126 @@ function Video() {
             </div>
         </>
     )
+}
+
+
+
+function Graphs() {    
+    const [psX, setPSX] = useState([]);
+    const [psY, setPSY] = useState([]);
+
+    function convertToSingleElementDictionaries(dictionaryOfLists) {
+        // Get the keys of the original dictionary
+        const keys = Object.keys(dictionaryOfLists);
+
+        // Check if there are no keys or if any of the lists is empty
+        if (keys.length === 0 || keys.some(key => dictionaryOfLists[key].length === 0)) {
+            return [];
+        }
+
+        // Find the maximum length among the lists
+        const maxLength = Math.max(...keys.map(key => dictionaryOfLists[key].length));
+
+        // Create a list of dictionaries
+        const listOfDictionaries = [];
+        for (let i = 0; i < maxLength; i++) {
+            const newDict = {};
+            keys.forEach(key => {
+            // Use the element if it exists, otherwise use null or some default value
+            newDict[key] = i < dictionaryOfLists[key].length ? dictionaryOfLists[key][i] : null;
+            });
+            listOfDictionaries.push(newDict);
+        }
+
+        return listOfDictionaries;
+    }
+
+    useEffect(() => {
+        const handleStorage = () => {
+            // let frequenciesX = localStorage.getItem("fX")
+            // let frequenciesY = localStorage.getItem("fY")
+            // let magnitudesX = localStorage.getItem("mX")
+            // let magnitudesY = localStorage.getItem("mY")
+
+            // setfX(frequenciesX);
+            // setfY(frequenciesY);
+            // setmX(magnitudesX);
+            // setmY(magnitudesY);
+
+            let ps1 = localStorage.getItem("PS");
+            ps1 = JSON.parse(ps1)
+
+            // Output: List of dictionaries
+            let ps2 = convertToSingleElementDictionaries(ps1);
+            // ps2 = ps2.slice(1, 1)
+            console.log(ps2)
+            // console.log("ps1", ps1, ps1["frequenciesX"])
+            // let indexes = Array.from(
+            //     { length: ps1["frequenciesX"].length + 1 }, (value, index) => index
+            // )
+            // console.log(indexes)
+            setPS(ps2)
+
+                            const data1 = [
+            { x: 0.001, y: 10 },
+            { x: 2, y: 15 },
+            { x: 3, y: 13 },
+            { x: 4, y: 18 },
+            { x: 7, y: 22 },
+                            ];
+            
+            // setPS(data1)
+                
+        }
+
+        window.addEventListener('storage', handleStorage())
+        return () => window.removeEventListener('storage', handleStorage())
+    }, [])
+
+    const data = [
+{ name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
+{ name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
+{ name: 'Page C', uv: 2000, pv: 9800, amt: 2290 },
+{ name: 'Page D', uv: 2780, pv: 3908, amt: 2000 },
+{ name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
+{ name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
+{ name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
+    ];
+    
+
+
+
+    return (
+        <div id="graphs" className="container flex row">
+            {/* <LineChart width={500} height={300} data={data}>
+                <XAxis dataKey="name"/>
+                <YAxis/>
+                <Line type="monotone" dataKey="uv" stroke="#8884d8" />
+                <Line type="monotone" dataKey="pv" stroke="#82ca9d" />
+            </LineChart> */}
+
+            {/* <LineChart width={500} height={300} data={ps} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="x" label={{ value: 'X Coordinate', position: 'insideBottom', offset: -10 }} />
+                <YAxis label={{ value: 'Y Coordinate', angle: -90, position: 'insideLeft', offset: -10 }} />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="y" stroke="#8884d8" activeDot={{ r: 8 }} />
+            </LineChart> */}
+
+            <LineChart width={1000} height={400} data={ps}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <XAxis type="category" dataKey="magnitudesX" />
+
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
+
+                <Line type="monotone" dataKey="frequenciesX" stroke="#8884d8" />
+            </LineChart>
+        </div>
+    );
 }
 
 function Settings() {

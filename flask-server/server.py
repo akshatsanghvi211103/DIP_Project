@@ -77,6 +77,8 @@ def getPixelSpectrum():
     magnitudesX = list(magnitudesX)
     magnitudesY = list(magnitudesY)
     
+    print(frequenciesX, frequenciesY, magnitudesX, magnitudesY)
+    
     return {
             "frequenciesX": frequenciesX,
             "frequenciesY": frequenciesY,
