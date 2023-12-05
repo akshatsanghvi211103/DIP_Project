@@ -208,9 +208,11 @@ def calcFinalDisplacements(frames_shape, pixel, hyp, x, y, freqX, freqY, modeX, 
     return final_displacement
 
 
-def renderOutputVideo(initial_frame, final_displacement):
+def renderOutputVideo(initial_frame, final_displacement, T=None):
     H, W, C = initial_frame.shape
+    
     Time, directions = final_displacement.shape[0], final_displacement.shape[-1]
+    if (T != None): Time = T;
     final_displacement = final_displacement.reshape(Time, H, W, directions)
 
     # initialize the current frame with the initial frame
@@ -221,7 +223,7 @@ def renderOutputVideo(initial_frame, final_displacement):
     grid = np.indices((H, W))  # shape = (2, H, W)
 
     # Loop through each time-step/frame
-    for frame_idx in range(4):
+    for frame_idx in range(Time):
         #   calculating final destination of each pixel from the displacement values
         frame_flow_data = final_displacement[frame_idx]  # shape = (H, W, 2)
         final_destinationX = (

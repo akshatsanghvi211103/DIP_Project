@@ -337,40 +337,45 @@ function Video() {
         }
     }
 
-    const drawVideo = () => {
-        let outputCanvas = outputRef.current
-
-        let outputCanvasContext = outputCanvas.getContext("2d")
-
-        outputCanvasContext.clearRect(0, 0, size.width, size.height)
-        outputCanvasContext.drawImage(outputFrames[outputIndex], 0, 0, size.width, size.height)
-        outputIndex += 1
-        requestAnimationFrame(drawVideo);
-
-        
+    let wait = (delayInMS) => {
+        return new Promise((resolve) => setTimeout(resolve, delayInMS))
     }
 
-    function drawFrame() {
-        let canvas1 = outputRef.current
-        let ctx1 = canvas1.getContext("2d")
+    // displays a frame onto the canvas from the frameData = {id, url}
+    let displayFrame = async (dataURL) => {
+        const canvas = outputRef.current;
+        const context = canvas.getContext('2d')
 
-        const currentFrame = outputFrames[outputIndex]
+        const img = new Image()
+        img.onload = () => {
+            context.drawImage(img, 0, 0)
+        }
 
-        ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
-        ctx1.drawImage(currentFrame, 0, 0, canvas1.width, canvas1.height);
+        img.height = size["height"]
+        img.width = size["width"]
+        img.src = dataURL
 
-        // Loop through frames
-        outputIndex = (outputIndex + 1) % outputFrames.length;
+        // window.setTimeout(displayFrame, 1000 / 30);
+    }
 
-        // Adjust the speed of the "video" by changing the timeout duration
-        setTimeout(drawFrame, 1000 / 30); // 30 frames per second
+    let displayFrames = async (dataURLs) => {
+        let delay = 1000 / 30;
+        for (let i = 0; i < dataURLs.length; i += 1) {
+            if (i) await wait(delay)
+            let frameData = dataURLs[i]
+            if (frameData === undefined) {
+            } else {
+                await displayFrame(frameData)
+            }
+        }
+
     }
 
     const processArrow = async (
-            pixel = [85, 155], freqXIndex = 34, freqYIndex = 34,
+            freqXIndex = 34, freqYIndex = 34,
             force = [0.5, 0.5]
     ) => {
-        
+        let pixel = [point1.x, point1.y]
         let hyperparameters = JSON.parse(localStorage.getItem("hyp"))
 
         const data = {
@@ -379,6 +384,8 @@ function Video() {
             "frequencyXIndex": freqXIndex,
             "frequencyYIndex": freqYIndex,
             "force": force,
+            "height": size["height"],
+            "width": size["width"],
             hyperparameters
             
         }
@@ -399,17 +406,10 @@ function Video() {
                 else return response.json()
             })
             .then((data) => {
-                // data = JSON.stringify(data)
                 let file1 = data["frames"];
                 console.log(file1)
-                // file1 = URL.createObjectURL(file1);
-                setOutputFrames(file1);
-                drawFrame();
-                // console.log(String(data))
-                // data = String(JSON.stringify(data));
-                // localStorage.setItem("OVid", data)
-                // window.dispatchEvent(new Event('storage'))
-
+                // setOutputFrames(file1); // list of data URLs
+                displayFrames(file1);
 
             })
             .catch((error) => {

@@ -111,6 +111,8 @@ def process():
     frequencyXIndex = data["frequencyXIndex"]
     frequencyYIndex = data["frequencyYIndex"]
     force = data["force"]
+    height = data["height"]
+    width = data["width"]
     hyperparameters = data["hyperparameters"]
     
     displacements = getDisplacements()
@@ -139,6 +141,8 @@ def process():
         "frequencyXIndex": frequencyXIndex,
         "frequencyYIndex": frequencyYIndex,
         "force": force,
+        "height": height,
+        "width": width,
         "hyperparameters": hyperparameters
     }
     
@@ -172,19 +176,25 @@ def process():
     print(final_displacement.shape)
     print("COMPLETED FINAL DISPLACEMENT")
     
-    
+    # frame_count = 4
     output_frames = renderOutputVideo(frame, final_displacement)
     output_video_path = os.path.abspath(os.path.join("./temp/", "output_video.avi"))
     saveFramesToVideo(output_frames, output_video_path)
     print(output_frames.shape)
     print("COMPLETED OUTPUT FRAMES")
     
+    base64_array = []
+    for i in range(len(output_frames)):
+        cv2.resize(output_frames[i], (height, width))
+        base64_array.append(image_to_base64(output_frames[i]))
+    
+    
     # print(output_video_path)
-    output_frames = output_frames.tolist()
+    # output_frames = output_frames.tolist()
     # return str(output_video_path)
     
     
-    return {"frames": output_frames}
+    return {"frames": base64_array}
         
 @app.post("/setConfig")
 def setConfig():     
