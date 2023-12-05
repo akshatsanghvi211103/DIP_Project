@@ -161,7 +161,7 @@ body {
 }
 
 .settings_title {
-    padding-top: 20px;
+    padding-top: 10px;
     height: 20px;
     width: 100%;
 }
@@ -171,7 +171,7 @@ body {
     width: 100%;
     padding: 30px;
 
-    gap: 300px;
+    gap: 180px;
 }
 
 .settings_column_wrapper {
@@ -183,6 +183,8 @@ body {
 .setting_item {
     height: 50%;
     width: 100%;
+
+    margin-top: 15px;
 }
 
 .setting_item_title {
@@ -190,7 +192,7 @@ body {
     width: 100%;
 
     text-align: right;
-    margin-left: -150px;
+    margin-left: -120px;
 }
 
 .setting_item_content {

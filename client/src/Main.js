@@ -28,6 +28,7 @@ function Main() {
             <Header />
             <div className="pageWrapperBackground"></div>
             <div id="pageWrapper" className="flex col">
+                <p>Welcome to the Interactive 2D Video Dynamics Web Tool! Here, you can visualize the output of a short, static clip that has some small amount of motion.</p>
                 <UsingVideo />
                 <img className="noise"></img>
                 {/* <img className="noise noise2"></img> */}
@@ -116,8 +117,11 @@ function Video() {
     const [display, setDisplay] = useState("none");
     const [pointerEvents, setPointerEvents] = useState("none")
 
-    const [point1, setPoint1] = useState({ x: 0, y: 0})
-    const [point2, setPoint2] = useState({ x: 0, y: 0 })
+    const [point1, setPoint1] = useState({ x: 342, y: 179})
+    const [point2, setPoint2] = useState({ x: 140, y: 366 })
+    const [force1, setForce1] = useState([-0.5, -0.5])
+    const forceRef = useRef(null);
+
     
     const [mouseState, setMouseState] = useState(0)
 
@@ -180,12 +184,12 @@ function Video() {
         return [x, y]
     }
 
-    const mouseDown = async (e) => {
+    const mouseDown = (e) => {
         let point = getPosition(e)
         const x = point[0]
         const y = point[1]
         // console.log(x, y)
-        setPoint1({x, y})
+        setPoint1({ x: x, y: y })
         setMouseState(1)
 
         // console.log(response1)
@@ -197,11 +201,23 @@ function Video() {
         const x = point[0]
         const y = point[1]
         // console.log(x, y)
-        setPoint2({ x, y })
+        setPoint2({ x: x, y: y })
+        let force = [x - point1.x, point1.y - y]
+        let normalization_amount = (Math.abs(force[0]) + Math.abs(force[1]))
+        // console.log("normalization_amount", normalization_amount)
+        force[0] /= normalization_amount
+        force[1] /= normalization_amount
+        setForce1(force)
 
+        
 
         setMouseState(0)
     }
+
+    useEffect(() => {
+        // console.log("Point1,2: ", point1, point2, force1)
+        forceRef.current = force1
+    }, [force1])
 
     const drawLine = (canvas, x, y) => {
         const canvasContext = canvas.getContext("2d")
@@ -270,6 +286,16 @@ function Video() {
 
         processArrow();
     }
+
+    useEffect(() => {
+        const canvas = canvasRef.current
+        
+        // getImage();
+        // window.setTimeout(getImage, 2000)
+        // window.setTimeout(() => { drawLine(canvas, point2.x, point2.y) }, 2100)
+        // window.setTimeout(processArrow, 2200)
+        
+    }, [])
 
 
     const button = useMemo(() => {
@@ -371,11 +397,16 @@ function Video() {
 
     }
 
+
     const processArrow = async (
             freqXIndex = 34, freqYIndex = 34,
-            force = [0.5, 0.5]
     ) => {
+
+        // console.log("Points", point1, point2)
         let pixel = [point1.x, point1.y]
+        let force = forceRef.current
+        // console.log("force3", force)
+
         let hyperparameters = JSON.parse(localStorage.getItem("hyp"))
 
         const data = {
@@ -532,6 +563,7 @@ function Video() {
                 {/* <div className="video_buttons flex row video_buttons1">
                     <input type="file" onChange={onFileChange} />
                 </div> */}
+                Input
                 <div className="container containerShadow" style={{...size}}>
                     <video
                         ref={videoRef}
@@ -563,6 +595,7 @@ function Video() {
             <div className="verticalDivider"></div>
 
             <div id="rightSideWrapper" className="sideWrapper flex col">
+                Rendered Output
                 <div className="container containerShadow flex" style={{ ...size }}>
                     {/* {<img
                         ref={outputImageRef}
@@ -739,10 +772,10 @@ function Graphs() {
     return (
         <div id="graphs" className="flex col">
             <div className="graph">
-                <PixelSpectrum />
+                <PowerSpectrum />
             </div>
             <div className="graph">
-                <PowerSpectrum />
+                <PixelSpectrum />
             </div>
         </div>
     );
@@ -763,13 +796,18 @@ function Settings() {
     const [mass, setMass] = useState(1);
     const [damp, setDamp] = useState(0.095);
     const [sample, setSample] = useState(1);
+    const [freqX, setfreqX] = useState(0.21);
+    const [freqY, setfreqY] = useState(0.21);
 
 
     const setting_options = [
         [{ name: "Amplification", min: 0, max: 10, default: 3 },
             {name: "Mass", min: 0, max: 5, default: 1}],
         [{ name: "Damp", min: 0, max: 1, default: 0.095 },
-            {name: "Sample", min: 0, max: 3, default: 1}],
+            { name: "Sample", min: 0, max: 3, default: 1 }],
+        [{ name: "Frequency (X)", min: -0.5, max: 0.5, default: 0.21 },
+            { name: "Frequency(Y)", min: -0.5, max: 0.5, default: 0.21 }],
+        
     ]
 
     const step_size = 10;
@@ -780,7 +818,6 @@ function Settings() {
                     "time" : 160,
                         "mass" : mass,
                             "damp" : damp,
-                                "width": 415,
                                     "sample" : sample
             })
         
@@ -794,13 +831,12 @@ function Settings() {
                     "time" : 160,
                         "mass" : mass,
                             "damp" : damp,
-                                "width": 415,
                                     "sample" : sample
             })
         
         console.log(hyperparameters)
         localStorage.setItem("hyperparameters", hyperparameters)
-    }, [amp, mass, damp, sample])
+    }, [amp, mass, damp, sample, freqX, freqY])
 
     const handleChange = (event, newValue, hyp) => {
         // console.log(event, newValue, hyp)
@@ -813,6 +849,10 @@ function Settings() {
             setDamp(newValue)
         } else if (hyp === "Sample") {
             setSample(newValue)
+        } else if (hyp === "Frequency (X)") {
+            setfreqX(newValue)
+        } else if (hyp === "Frequency (Y)") {
+            setfreqY(newValue)
         } else {
             console.log("I did something wrong ig")
         }
@@ -848,7 +888,7 @@ function Settings() {
                                             color="secondary"
                                             onChange={(e, v) => { handleChange(e, v, item2.name)}}
 
-                                            // size="small"
+                                            size="small"
                                         />
                                     </div>
                                 </div>)

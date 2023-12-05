@@ -141,8 +141,6 @@ def process():
         "frequencyXIndex": frequencyXIndex,
         "frequencyYIndex": frequencyYIndex,
         "force": force,
-        "height": height,
-        "width": width,
         "hyperparameters": hyperparameters
     }
     
@@ -185,8 +183,8 @@ def process():
     
     base64_array = []
     for i in range(len(output_frames)):
-        cv2.resize(output_frames[i], (height, width))
-        base64_array.append(image_to_base64(output_frames[i]))
+        output_frame = cv2.resize(output_frames[i], (width, height))
+        base64_array.append(image_to_base64(output_frame))
     
     
     # print(output_video_path)
