@@ -6,7 +6,7 @@ import re
 
 PATHNAME = os.getcwd()
 # Given file name, return frames
-def getFramesFromVideo(video_file_name):
+def getFramesFromVideo(video_file_name, width, height):
     DATA_FOLDER = os.path.join(PATHNAME, "data")
     video_path = os.path.join(DATA_FOLDER, video_file_name)
     
@@ -14,6 +14,9 @@ def getFramesFromVideo(video_file_name):
 
     # reading the video file
     video_capture = cv2.VideoCapture(video_path)
+    video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+    video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
     num_frames = video_capture.get(cv2.CAP_PROP_FRAME_COUNT)
     fps = video_capture.get(cv2.CAP_PROP_FPS)
 
@@ -25,13 +28,24 @@ def getFramesFromVideo(video_file_name):
     while check:
         check, arr = video_capture.read()
         if arr is not None:
+            # print(arr.shape)
+            # print(arr)
+            
             if count == 0:
                 initial_frame = np.copy(arr)
+                initial_frame = cv2.resize(initial_frame, (width, height))
+            arr = cv2.resize(arr, dsize=(width, height))
+            # print(arr.shape)
             arr = cv2.cvtColor(arr, cv2.COLOR_BGR2GRAY)
+            # print(arr)
             frames.append(arr)
             count += 1
 
+    # for i in range(len(frames)):
+    #     # frames[i] = cv2.resize(frames[i], dsize=(width, height))
+    #     print(frames[i].shape)
     frames = np.array(frames)
+    
     num_frames = frames.shape[0]
     
     return initial_frame, frames

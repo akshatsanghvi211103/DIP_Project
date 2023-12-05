@@ -19,16 +19,23 @@ def uploadFile():
     data = request.get_json()
     print(data)
     video_file_name = data["video_file_name"]
+    height = data["height"]
+    width = data["width"]
+    
+    # print("wh", width, height)
     print(video_file_name)
-    initial_frame, frames = getFramesFromVideo(video_file_name)
+    initial_frame, frames = getFramesFromVideo(video_file_name, width, height)
     flows = calcVideoFlow(frames)
     displacements = calcDispFromFlow(flows)
     
+    print("initialFrameShape", initial_frame.shape)
     frames_file_path = "./temp/frame.npy"
     displacements_file_name = "./temp/displacements.npy"
     print(displacements_file_name) 
     np.save(frames_file_path, initial_frame)
     np.save(displacements_file_name, displacements)
+    
+    print("width, height", width, height);
     
     return {"status": "okay"}
 
@@ -77,7 +84,7 @@ def getPixelSpectrum():
     magnitudesX = list(magnitudesX)
     magnitudesY = list(magnitudesY)
     
-    print(frequenciesX, frequenciesY, magnitudesX, magnitudesY)
+    # print(frequenciesX, frequenciesY, magnitudesX, magnitudesY)
     
     return {
             "frequenciesX": frequenciesX,
@@ -113,10 +120,13 @@ def process():
     force = data["force"]
     height = data["height"]
     width = data["width"]
+    
+    print("hw", height, width)
     hyperparameters = data["hyperparameters"]
     
     displacements = getDisplacements()
     frame = np.load("./temp/frame.npy")
+    print("initialFrameShape2", frame.shape)
     frequencyX_path = "./temp/frequenciesX.npy"
     frequencyY_path = "./temp/frequenciesY.npy"
 
@@ -141,6 +151,8 @@ def process():
         "frequencyXIndex": frequencyXIndex,
         "frequencyYIndex": frequencyYIndex,
         "force": force,
+        "height": height,
+        "width": width,
         "hyperparameters": hyperparameters
     }
     
@@ -155,8 +167,9 @@ def process():
 
     modeY = calcFreqShape(displacements, axis=1, freq_index=frequencyYIndex)
     modeY = modeY.reshape(-1)
-    # print(modeX.shape)
-    # print(modeY.shape)
+    print("Mode Shapes")
+    print(modeX.shape)
+    print(modeY.shape)
     
     # print(frame.shape)
     
@@ -164,11 +177,13 @@ def process():
     chosenFrequencyX = frequencyX[frequencyXIndex]
     chosenFrequencyY = frequencyY[frequencyYIndex]
     freq = (abs(chosenFrequencyX), abs(chosenFrequencyY))
-    x, y = calcDisplacment(hyperparameters, freq, pixel, force, modeX, modeY)
+    x, y = calcDisplacment(hyperparameters, width, freq, pixel, force, modeX, modeY)
     print("COMPLETED DISPLACEMENT")
     # print("xy", x.shape, y.shape)
     
+    # cv2.resize(frame, (width, height))
     frames_shape = frame.shape
+    print("frameshape", frames_shape)
     final_displacement = calcFinalDisplacements(
         frames_shape, pixel, hyperparameters, x, y, chosenFrequencyX, chosenFrequencyY, modeX, modeY)
     print(final_displacement.shape)
@@ -183,8 +198,9 @@ def process():
     
     base64_array = []
     for i in range(len(output_frames)):
-        output_frame = cv2.resize(output_frames[i], (width, height))
-        base64_array.append(image_to_base64(output_frame))
+        # output_frame = cv2.resize(output_frames[i], (width, height))
+        # print("outputshape", output_frame.shape)
+        base64_array.append(image_to_base64(output_frames[i]))
     
     
     # print(output_video_path)

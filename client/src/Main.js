@@ -28,7 +28,7 @@ function Main() {
             <Header />
             <div className="pageWrapperBackground"></div>
             <div id="pageWrapper" className="flex col">
-                <p>Welcome to the Interactive 2D Video Dynamics Web Tool! Here, you can visualize the output of a short, static clip that has some small amount of motion.</p>
+                <p className="text1">Welcome to the Interactive 2D Video Dynamics Web Tool! Here, you can input a short, static clip that has some small amount of motion and our tool will predict the physics using Modal Analysis and Flow Displacement Calculation</p>
                 <UsingVideo />
                 <img className="noise"></img>
                 {/* <img className="noise noise2"></img> */}
@@ -111,7 +111,9 @@ function Video() {
     const videoRef = useRef(null);
     const outputRef = useRef(null);
     
-    const [size, setSize] = useState({ width: 0, height: 0})
+    const [size, setSize] = useState({ width: 0, height: 0 })
+    const sizeRef = useRef(null);
+
     const [targetOpacity, setTargetOpacity] = useState(0)
     const [file, setFile] = useState(bobble)
     const [display, setDisplay] = useState("none");
@@ -121,6 +123,7 @@ function Video() {
     const [point2, setPoint2] = useState({ x: 140, y: 366 })
     const [force1, setForce1] = useState([-0.5, -0.5])
     const forceRef = useRef(null);
+    const pixelRef = useRef(null);
 
     
     const [mouseState, setMouseState] = useState(0)
@@ -184,7 +187,7 @@ function Video() {
         return [x, y]
     }
 
-    const mouseDown = (e) => {
+    const mouseDown = async (e) => {
         let point = getPosition(e)
         const x = point[0]
         const y = point[1]
@@ -215,9 +218,18 @@ function Video() {
     }
 
     useEffect(() => {
+        pixelRef.current = point1
+    }, [point1])
+
+    useEffect(() => {
         // console.log("Point1,2: ", point1, point2, force1)
         forceRef.current = force1
     }, [force1])
+
+    useEffect(() => {
+        // console.log("Point1,2: ", point1, point2, force1)
+        sizeRef.current = size
+    }, [size])
 
     const drawLine = (canvas, x, y) => {
         const canvasContext = canvas.getContext("2d")
@@ -336,10 +348,12 @@ function Video() {
         }
     }, [display, getImage, reset, showVideo]);
 
-    const uploadVideo = async () => {
+    const uploadVideo = async (width, height) => {
         // let video_file_name = "bobble_small.mp4"
         const data = {
-            video_file_name: "bobble_small.mp4"
+            "video_file_name": "bobble_small.mp4",
+            "height": height,
+            "width": width
         }
 
         console.log(JSON.stringify(data))
@@ -353,14 +367,19 @@ function Video() {
             },
             body: JSON.stringify(data)
         })
+            .then((response) => {
+                if (!response.ok) throw new Error(response.status)
+                else return response.json()
+            })
+            .then((data) => {
+                console.log(data)
 
-        if (response.ok) {
-            console.log("Got Response")
-            return 1;
-        } else {
-            console.log("Did Not get Response")
-            return 0;
-        }
+            })
+            .catch((error) => {
+                console.log("Error: " + error);
+
+            })
+
     }
 
     let wait = (delayInMS) => {
@@ -377,8 +396,10 @@ function Video() {
             context.drawImage(img, 0, 0)
         }
 
-        img.height = size["height"]
-        img.width = size["width"]
+        let size1 = sizeRef.current
+
+        img.height = size1.height
+        img.width = size1.width
         img.src = dataURL
 
         // window.setTimeout(displayFrame, 1000 / 30);
@@ -401,9 +422,10 @@ function Video() {
     const processArrow = async (
             freqXIndex = 34, freqYIndex = 34,
     ) => {
-
+        let size1 = sizeRef.current;
         // console.log("Points", point1, point2)
-        let pixel = [point1.x, point1.y]
+        let point = pixelRef.current
+        let pixel = [point.x, point.y]
         let force = forceRef.current
         // console.log("force3", force)
 
@@ -415,8 +437,8 @@ function Video() {
             "frequencyXIndex": freqXIndex,
             "frequencyYIndex": freqYIndex,
             "force": force,
-            "height": size["height"],
-            "width": size["width"],
+            "height": size1.height,
+            "width": size1.width,
             hyperparameters
             
         }
@@ -438,7 +460,7 @@ function Video() {
             })
             .then((data) => {
                 let file1 = data["frames"];
-                console.log(file1)
+                // console.log(file1)
                 // setOutputFrames(file1); // list of data URLs
                 displayFrames(file1);
 
@@ -471,10 +493,11 @@ function Video() {
                 else return response.json()
             })
             .then((data) => {
-                console.log(data)
+                // console.log(data)
                 data = JSON.stringify(data);
                 localStorage.setItem("PS", data)
                 window.dispatchEvent(new Event('storage'))
+                console.log("Dispatched Storage Event")
 
             })
             .catch((error) => {
@@ -496,11 +519,12 @@ function Video() {
                 else return response.json()
             })
             .then((data) => {
-                console.log(data)
+                // console.log(data)
                 data = convertToSingleElementDictionaries(data);
                 data = JSON.stringify(data);
                 localStorage.setItem("PoS", data)
                 window.dispatchEvent(new Event('storage'))
+                console.log("Dispatched Storage Event")
                 // setPoS(PoS1);
 
             })
@@ -535,14 +559,9 @@ function Video() {
             // console.log(height)
             // console.log('\n')
             setSize({width, height})
+            uploadVideo(width, height);
         }
 
-        let response = uploadVideo();
-        if (response) {
-            console.log("Done");
-        } else {
-            console.log("Fail");
-        }
 
         getPowerSpectrum();
 
@@ -663,24 +682,26 @@ function PixelSpectrum() {
     const [psY, setPSY] = useState([]);
 
 
+    const handleStorage = () => {
+
+        console.log("Loading Pixel Spectrum Graphs")
+
+        let ps1 = localStorage.getItem("PS");
+        let psX1 = JSON.parse(ps1)
+        let psY1 = JSON.parse(ps1)
+        // console.log("psx1", psX1)
+        let psX2 = convertToSingleElementDictionaries(psX1);
+        let psY2 = convertToSingleElementDictionaries(psY1);
+
+        setPSX(psX2)
+        setPSY(psY2)
+            
+    }
 
     useEffect(() => {
-        const handleStorage = () => {
 
-            let ps1 = localStorage.getItem("PS");
-            let psX1 = JSON.parse(ps1)
-            let psY1 = JSON.parse(ps1)
-            // console.log("psx1", psX1)
-            let psX2 = convertToSingleElementDictionaries(psX1);
-            let psY2 = convertToSingleElementDictionaries(psY1);
-
-            setPSX(psX2)
-            setPSY(psY2)
-                
-        }
-
-        window.addEventListener('storage', handleStorage())
-        return () => window.removeEventListener('storage', handleStorage())
+        window.addEventListener('storage', handleStorage(), false)
+        // return () => window.removeEventListener('storage', handleStorage())
     }, [])
 
     return (
@@ -834,7 +855,7 @@ function Settings() {
                                     "sample" : sample
             })
         
-        console.log(hyperparameters)
+        // console.log(hyperparameters)
         localStorage.setItem("hyperparameters", hyperparameters)
     }, [amp, mass, damp, sample, freqX, freqY])
 
@@ -854,7 +875,7 @@ function Settings() {
         } else if (hyp === "Frequency (Y)") {
             setfreqY(newValue)
         } else {
-            console.log("I did something wrong ig")
+            console.log("Error with Setting Hyperparameters")
         }
         // console.log(amp, mass, damp, sample)
     }

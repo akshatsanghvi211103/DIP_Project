@@ -145,7 +145,7 @@ def calcModeShape(disp, axis=0, freq_index=0):
     return mode_shape
 
 
-def calcDisplacment(hyp, freq, pixel, force, best_modeX, best_modeY):
+def calcDisplacment(hyp, width, freq, pixel, force, best_modeX, best_modeY):
     '''
     hyp is the dictionary having the hyperparameters
     freq is the user defined frequency of the mode shape
@@ -154,8 +154,8 @@ def calcDisplacment(hyp, freq, pixel, force, best_modeX, best_modeY):
     '''
     alpha = hyp['amplification'] # Amplification factor
     # The force in the modal coordinates
-    f_x = alpha * force[0] * np.abs(best_modeX[pixel[0] * hyp["width"] + pixel[1]])
-    f_y = alpha * force[1] * np.abs(best_modeY[pixel[0] * hyp["width"] + pixel[1]])
+    f_x = alpha * force[0] * np.abs(best_modeX[pixel[0] * width + pixel[1]])
+    f_y = alpha * force[1] * np.abs(best_modeY[pixel[0] * width + pixel[1]])
 
     t = hyp["time"] # The total time of the simulation
     x = np.zeros((t + 1, 2)) # The array corresponding to the output displacement in the x dirn
