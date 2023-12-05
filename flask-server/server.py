@@ -179,11 +179,12 @@ def process():
     print(output_frames.shape)
     print("COMPLETED OUTPUT FRAMES")
     
-    print(output_video_path)
-    return str(output_video_path)
+    # print(output_video_path)
+    output_frames = output_frames.tolist()
+    # return str(output_video_path)
     
     
-    # return {"status": "okay"}
+    return {"frames": output_frames}
         
 @app.post("/setConfig")
 def setConfig():     

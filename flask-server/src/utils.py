@@ -221,7 +221,7 @@ def renderOutputVideo(initial_frame, final_displacement):
     grid = np.indices((H, W))  # shape = (2, H, W)
 
     # Loop through each time-step/frame
-    for frame_idx in range(Time):
+    for frame_idx in range(4):
         #   calculating final destination of each pixel from the displacement values
         frame_flow_data = final_displacement[frame_idx]  # shape = (H, W, 2)
         final_destinationX = (

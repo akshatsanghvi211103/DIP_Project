@@ -101,9 +101,14 @@ function UsingVideo() {
 function Video() {
 
     const videoIncrement = 1
-
+    const [outputVideoFile, setOutputVideoFile] = useState('')
+    const [outputFrames, setOutputFrames] = useState([])
+    const [outputIndex, setOutputIndex] = useState(0);
+    
+    const outputImageRef = useRef(null);
     const canvasRef = useRef(null);
     const videoRef = useRef(null);
+    const outputRef = useRef(null);
     
     const [size, setSize] = useState({ width: 0, height: 0})
     const [targetOpacity, setTargetOpacity] = useState(0)
@@ -332,6 +337,35 @@ function Video() {
         }
     }
 
+    const drawVideo = () => {
+        let outputCanvas = outputRef.current
+
+        let outputCanvasContext = outputCanvas.getContext("2d")
+
+        outputCanvasContext.clearRect(0, 0, size.width, size.height)
+        outputCanvasContext.drawImage(outputFrames[outputIndex], 0, 0, size.width, size.height)
+        outputIndex += 1
+        requestAnimationFrame(drawVideo);
+
+        
+    }
+
+    function drawFrame() {
+        let canvas1 = outputRef.current
+        let ctx1 = canvas1.getContext("2d")
+
+        const currentFrame = outputFrames[outputIndex]
+
+        ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+        ctx1.drawImage(currentFrame, 0, 0, canvas1.width, canvas1.height);
+
+        // Loop through frames
+        outputIndex = (outputIndex + 1) % outputFrames.length;
+
+        // Adjust the speed of the "video" by changing the timeout duration
+        setTimeout(drawFrame, 1000 / 30); // 30 frames per second
+    }
+
     const processArrow = async (
             pixel = [85, 155], freqXIndex = 34, freqYIndex = 34,
             force = [0.5, 0.5]
@@ -365,10 +399,17 @@ function Video() {
                 else return response.json()
             })
             .then((data) => {
-                console.log(String(data))
+                // data = JSON.stringify(data)
+                let file1 = data["frames"];
+                console.log(file1)
+                // file1 = URL.createObjectURL(file1);
+                setOutputFrames(file1);
+                drawFrame();
+                // console.log(String(data))
                 // data = String(JSON.stringify(data));
                 // localStorage.setItem("OVid", data)
                 // window.dispatchEvent(new Event('storage'))
+
 
             })
             .catch((error) => {
@@ -522,8 +563,36 @@ function Video() {
             <div className="verticalDivider"></div>
 
             <div id="rightSideWrapper" className="sideWrapper flex col">
-                <div className="container containerShadow flex" style={{...size}}>
-
+                <div className="container containerShadow flex" style={{ ...size }}>
+                    {/* {<img
+                        ref={outputImageRef}
+                        src={outputFrames[outputIndex]}
+                        style={{
+                            position: "absolute",
+                            // borderRadius: "5px",
+                            opacity: targetOpacity,
+                            ...size,
+                            pointerEvents: pointerEvents
+                        }}
+                    />} */}
+                    <div>
+                        <canvas
+                            ref={outputRef}
+                            {...size}
+                            onMouseDown={mouseDown}
+                            onMouseUp={mouseUp}
+                            onMouseMove={mouseMove}
+                            // style={{ borderRadius: "5px" }}
+                        />
+                    </div>
+                    {/* {outputVideoFile && <video
+                        controls
+                        style={{
+                            ...size
+                        }}
+                    >
+                        <source src={outputVideoFile} type="video/avi" />
+                    </video>} */}
                 </div>
             </div>
         </>
