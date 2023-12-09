@@ -7,10 +7,13 @@
     --first_section_h: 60vh;
     --page_margin: 50px;
     --page_size: 300vh;
+    --footnote-size: 300px;
+
+    --font_family: Merriweather;
 
     --backgroundColor: #6d6875;
     --leftSize: 50%;
-    --headerSize: 50px;
+    --headerSize: 100px;
     --globalPadding: 10px;
     --yellow: #EDB74D;
     --red: #EB6666;
@@ -28,6 +31,7 @@ head,
 body {
     padding: 0px;
     margin: 0px;
+
 }
 
 head,
@@ -35,7 +39,8 @@ body {
     position: relative;
     background-color: var(--backgroundColor);
     /* color: var(--secondary); */
-    font-family: monospace;
+    /* font-family: monospace; */
+    font-family: var(--font_family);
     /* color: var(--tertiary); */
     color: black;
 }
@@ -73,7 +78,19 @@ body {
 
     border-bottom: 1px solid var(--secondary);
     backdrop-filter: blur(50px);
+    font-size: 40px;
 
+    color: var(--yellow);
+    text-shadow: .1em .1em 0 hsl(200 50% 30%);
+}
+
+.header_item {
+    height: 10px;
+    width: 300px;
+    font-size: 15px;
+
+    color: black;
+    text-shadow: none;
 }
 
 #pageWrapper {
@@ -89,13 +106,18 @@ body {
 .pageWrapperBackground {
     position: absolute;
     margin: var(--page_margin);
-    height: var(--page_size);
+    height: calc(var(--page_size) + 20px);
     width: calc(100% - 2 * var(--page_margin));
     background-color: white;
     /* opacity: 50%; */
     z-index: -1;
 
     border-radius: 10px;
+}
+
+.text_heading {
+    width: 95%;
+    height: 20px;
 }
 
 #videosWrapper {
@@ -106,6 +128,36 @@ body {
     width: 100%;
 }
 
+#footnote {
+    height: var(--footnote-size);
+    width: 100vw;
+    backdrop-filter: blur(50px);
+
+    color: var(--tertiary);
+
+    margin-top: 80px;
+}
+
+.footnote_section {
+    height: 100%;
+    width: 50%;
+}
+
+.footnote_item {
+    width: 500px;
+    height: 100%;
+    font-size: 40px;
+    /* text-shadow: 1px 1px 10px 1px black; */
+    text-shadow: .1em .1em 0 hsl(200 50% 30%);
+}
+
+.footnote_item2 {
+    font-size: 80px;
+    margin-bottom: 20px;
+    justify-content: right;
+    font-weight:900;
+    text-align: right;
+}
 
 
 .sideWrapper {
@@ -158,10 +210,13 @@ body {
 .settings {
     height: 20vh;
     width: 80vw;
+
+    margin-top: 20px;
 }
 
 .settings_title {
     padding-top: 10px;
+    margin-top: -20px;
     height: 20px;
     width: 100%;
 }
@@ -277,7 +332,7 @@ body {
 .noise {
     z-index: -1;
     position: absolute;
-    height: calc(var(--page_size) + var(--headerSize));
+    height: calc(var(--page_size) + var(--headerSize) + var(--footnote-size));
     width: 100%;
     opacity: 60%;
 
@@ -457,6 +512,8 @@ input[type=file]::file-selector-button {
     color: #fff;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+
+    font-family: var(--font_family);
 }
 
 button:hover,
@@ -469,7 +526,7 @@ input[type=file]::file-selector-button:hover {
     width: 100%;
     height: 100vh;
 
-    margin-top: 500px;
+    margin-top: 430px;
 
 }
 
@@ -489,4 +546,8 @@ h2 {
 .text1 {
     margin-left: 60px;
     margin-right: 40px;
+}
+
+.css-12rsbf4-MuiSlider-valueLabel {
+    font-family: var(--font_family)!;
 }

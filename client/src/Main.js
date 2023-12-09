@@ -16,7 +16,14 @@ import bobbleBIG from "./assets/bobbleBIG.mp4"
 import { LineChart, CartesianGrid, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer} from "recharts";
 import Slider from '@mui/material/Slider';
 
+import { makeStyles } from "@mui/styles";
+import { ClassNames } from "@emotion/react";
 
+const useStyles = makeStyles({
+    slider: {
+        fontFamily: 'monospace'
+    }
+});
 
 
 function Main() {
@@ -28,15 +35,42 @@ function Main() {
             <Header />
             <div className="pageWrapperBackground"></div>
             <div id="pageWrapper" className="flex col">
-                <p className="text1">Welcome to the Interactive 2D Video Dynamics Web Tool! Here, you can input a short, static clip that has some small amount of motion and our tool will predict the physics using Modal Analysis and Flow Displacement Calculation</p>
-                <UsingVideo />
+                <h2 className="text_heading" style={{ marginLeft: "-10px" }}>
+                    Introduction
+                </h2>
+                <p className="text1">Welcome to the Interactive 2D Video Dynamics Web Tool! Here, you can input a short, static clip that has some small amount of motion and our tool will predict the physics using Modal Analysis and Flow Displacement Calculation. <br>
+                </br><br></br>Steps to use:
+                    <br></br>1. Click "Get Image" Button to display frames from input video 
+                    <br></br>2. Draw an arrow on the input image
+                    <br></br>3. Adjust settings to your liking
+                    <br></br>4. Click Confirm arrow to render output
+                </p>
                 <img className="noise"></img>
                 {/* <img className="noise noise2"></img> */}
+                <h2 className="text_heading" style={{ marginLeft: "-10px", marginBottom: "-20px" }}>
+                    Input/Output
+                </h2>
                 <Blobs />
+                <UsingVideo />
                 <Settings />
 
                 <Graphs />
 
+
+            </div>
+            <div id="footnote" className="flex row">
+                <div className="footnote_section flex col">
+                    <div className="footnote_item flex">
+                        A Project made by Shreyas Reddy Palley, Vansh Garg, Akshat Sanghvi, Keshav Gupta, Mallika Garg
+
+                    </div>
+                </div>
+                <div className="footnote_section flex col">
+                    <div className="footnote_item footnote_item2 flex">
+                        Help! My Model is Vibrating
+
+                    </div>
+                </div>
             </div>
             {/* <MousePos /> */}
             {/* <div className="screen"></div>
@@ -48,8 +82,12 @@ function Main() {
 function Header() {
 
     return (
-        <div id="header" className="flex">
-            Interactive 2D Video Dynamics
+        <div id="header" className="flex col">
+            <b>Interactive 2D Video Dynamics</b>
+            <div className="header_item flex row">
+                By &nbsp;  <b>Help! My Model is Vibrating</b>
+            </div>
+            
         </div>
     )
 }
@@ -315,7 +353,7 @@ function Video() {
             case "none":
                 return (
                     <button type="button" onClick={getImage}>
-                    get image
+                    Start
                     </button>
 
 
@@ -324,15 +362,15 @@ function Video() {
                 return (
                     <>
                         <button type="button" onClick={showVideo}>
-                        show video
+                        Video Mode
                         </button>
 
                         <button type="button" onClick={getNextImage}>
-                        get next image
+                        Next image
                         </button>
 
                         <button type="button" onClick={confirmArrow}>
-                        confirm arrow
+                        Confirm Arrow
                         </button>
                     
                     </>
@@ -804,21 +842,14 @@ function Graphs() {
 
 function Settings() {
 
-    // "hyperparameters": {
-    //     "amplification" : 3,
-    //     "time" : 160,
-    //     "mass" : 1,
-    //     "damp" : 0.095,
-    //     "width": 415,
-    //     "sample" : 1
-    // }
-    
     const [amp, setAmp] = useState(3);
     const [mass, setMass] = useState(1);
     const [damp, setDamp] = useState(0.095);
     const [sample, setSample] = useState(1);
     const [freqX, setfreqX] = useState(0.21);
     const [freqY, setfreqY] = useState(0.21);
+
+    const classes = useStyles();
 
 
     const setting_options = [
@@ -881,53 +912,58 @@ function Settings() {
     }
     
     return (
-        <div className="settings container containerShadow flex col">
-            <div className="settings_title flex">
+        <>
+            <h2 className="text_heading" style={{ marginLeft: "-0px"}}>
                 Settings
-            </div>
+            </h2>
+            <div className="settings container containerShadow flex col">
+                <div className="settings_title">
+                    {/* <h2>Settings</h2> */}
+                </div>
 
-            <div className="settings_wrapper flex row">
-                {
-                    setting_options.map((item1, index1) => {
-                        return (<div className="settings_column_wrapper flex col" key={index1}>
-                            {item1.map((item2, index2) => {
-                                return (<div className="setting_item" key={index1 * 2 + index2}>
-                                    <div className="setting_item_title">
-                                        {item2.name}
-                                    </div>
-                                    <div className="setting_item_content">
-                                        <Slider
-                                            min={item2.min}
-                                            max={item2.max}
-                                            defaultValue={item2.default}
-                                            step={(item2.max - item2.min) / step_size}
-
-                                            marks={
-                                                [{ value: item2.min, label: String(item2.min) }, { value: item2.default, label: String(item2.default) }, { value: item2.max, label: String(item2.max) }]}
-                                            // aria-labelledby="discrete-slider"
-                                            valueLabelDisplay="on"
-                                            color="secondary"
-                                            onChange={(e, v) => { handleChange(e, v, item2.name)}}
-
-                                            size="small"
-                                        />
-                                    </div>
-                                </div>)
-                            })}
-                        </div>)
-                    })
-                }
-                {/* <div className="settings_column_wrapper flex col">
-                    <div className="setting_item">
+                <div className="settings_wrapper flex row">
+                    {
+                        setting_options.map((item1, index1) => {
+                            return (<div className="settings_column_wrapper flex col" key={index1}>
+                                {item1.map((item2, index2) => {
+                                    return (<div className="setting_item" key={index1 * 2 + index2}>
+                                        <div className="setting_item_title">
+                                            {item2.name}
+                                        </div>
+                                        <div className="setting_item_content">
+                                            <Slider
+                                                className={classes.slider}
+                                                min={item2.min}
+                                                max={item2.max}
+                                                defaultValue={item2.default}
+                                                step={(item2.max - item2.min) / step_size}
+                                                
+                                                marks={
+                                                    [{ value: item2.min, label: String(item2.min) }, { value: item2.default, label: String(item2.default) }, { value: item2.max, label: String(item2.max) }]}
+                                                    // aria-labelledby="discrete-slider"
+                                                    valueLabelDisplay="on"
+                                                    color="secondary"
+                                                    onChange={(e, v) => { handleChange(e, v, item2.name)}}
+                                                    size="small"
+                                                    />
+                                        </div>
+                                    </div>)
+                                })}
+                            </div>)
+                        })
+                    }
+                    {/* <div className="settings_column_wrapper flex col">
+                        <div className="setting_item">
                         
-                    </div>
-                    <div className="setting_item">
+                        </div>
+                        <div className="setting_item">
+                        
+                        </div>
+                    </div> */}
+                </div>
 
-                    </div>
-                </div> */}
             </div>
-
-        </div>
+        </>
     )
 }
 
